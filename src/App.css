@@ -1,0 +1,44 @@
+.MoneyIO-App {
+}
+
+#MoneyIO-App-Title {
+  font-weight: bold;
+}
+
+.input-group-addon {
+  padding: 0.5em 0.5em !important;  /* make it thinner */
+} 
+
+.form-control-label {
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.MoneyIO-App-content {
+  margin: 1.2em 0em;
+}
+
+.MoneyIO-entry-form-item {
+  background-color: #eee;
+  margin: 0em 0em 0.5em 0em;    /* touch the card edge, leave some space below for shadow */
+  padding: 1.1em 1.1em 0.3em 1.1em;
+  box-shadow: 0em 0.2em 0.4em #ccc;
+  animation: MoneyIO-entry-form-flyin 0.2s ease-out;
+}
+
+.MoneyIO-entry-form-item-close-button {
+  margin: 0em -1.0em;
+}
+
+.MoneyIO-summary {
+  padding-top: 1.5em;
+}
+
+.MoneyIO-entry-from-price-field {
+  margin-left: -1.1em;
+}
+
+@keyframes MoneyIO-entry-form-flyin {
+  from { transform: translateX(-50vw); opacity: 0.0; }
+  to { transform: translateX(0); opacity: 1.0; }
+}
