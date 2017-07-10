@@ -38,6 +38,10 @@
   margin-left: -1.1em;
 }
 
+.MoneyIO-Nav-container {
+  margin-bottom: 1em;
+}
+
 @keyframes MoneyIO-entry-form-flyin {
   from { transform: translateX(-50vw); opacity: 0.0; }
   to { transform: translateX(0); opacity: 1.0; }
