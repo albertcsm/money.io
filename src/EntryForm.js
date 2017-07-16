@@ -148,7 +148,7 @@ class EntryForm extends Component {
       );
     }
     return (
-      <div key={adjustment.id}>
+      <div key={adjustment.id} className="MoneyIO-bill-adjustment-item">
         <FormGroup check>
           <Label check>
             <Input type="checkbox" checked={adjustment.enabled} onClick={() => this.setAdjustmentOption(adjustment.id, 'enabled', !adjustment.enabled)}/> {translations[adjustment.type]}
@@ -191,7 +191,7 @@ class EntryForm extends Component {
                 <div className="col-9">
                   <InputGroup>
                     <InputGroupAddon><span className="fa fa-usd"/></InputGroupAddon>
-                    <Input  type="number" step="any" readOnly value={total}/>
+                    <Input id="total" type="number" step="any" readOnly value={total}/>
                   </InputGroup>
                 </div>
               </FormGroup>
@@ -219,7 +219,7 @@ class EntryForm extends Component {
             onRemove={() => this.removeEntryItem(i)}/>
         ))}
         <div className="text-center">
-          <Button color="link" onClick={() => this.addNewEntryItem()}>
+          <Button id="add-entry-item-button" color="link" onClick={() => this.addNewEntryItem()}>
             <span className="fa fa-plus"/> Add
           </Button>
         </div>
