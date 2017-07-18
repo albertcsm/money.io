@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } from 'reactstrap';
-import { HashRouter, Route, Redirect, Link, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect, Link, Switch } from 'react-router-dom';
 import './App.css';
 import EntryForm from './EntryForm';
 import ReceiptList from './ReceiptList';
@@ -22,7 +22,7 @@ class App extends Component {
 
   render() {
     return (
-      <HashRouter>
+      <BrowserRouter>
         <div className="MoneyIO-App">
           <Navbar color="primary" inverse toggleable>
             <NavbarToggler right onClick={this.toggleNav} />
@@ -54,7 +54,7 @@ class App extends Component {
             </div>
           </div>
         </div>
-      </HashRouter>
+      </BrowserRouter>
     );
   }
 
