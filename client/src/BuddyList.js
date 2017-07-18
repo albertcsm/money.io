@@ -6,8 +6,15 @@ class BuddyList extends Component {
   constructor() {
     super();
     this.state = {
+      buddies: [],
       subList: 'closeBuddies'
     }
+  }
+
+  componentDidMount() {
+    fetch('/users')
+      .then(res => res.json())
+      .then(buddies => this.setState({ buddies }));
   }
 
   setSubList(subListName) {
@@ -38,14 +45,12 @@ class BuddyList extends Component {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Alice</td>
-              <td>689.4</td>
-            </tr>
-            <tr>
-              <td>Bob</td>
-              <td>777.4</td>
-            </tr>
+            {this.state.buddies.map(buddy =>
+              <tr key={buddy.id}>
+                <td>{buddy.username}</td>
+                <td>-</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
