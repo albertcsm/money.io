@@ -12,9 +12,9 @@ class BuddyList extends Component {
   }
 
   componentDidMount() {
-    fetch('/users')
+    fetch('/api/buddies')
       .then(res => res.json())
-      .then(buddies => this.setState({ buddies }));
+      .then(response => this.setState({ buddies : response._embedded.buddies }));
   }
 
   setSubList(subListName) {
@@ -47,7 +47,7 @@ class BuddyList extends Component {
           <tbody>
             {this.state.buddies.map(buddy =>
               <tr key={buddy.id}>
-                <td>{buddy.username}</td>
+                <td>{buddy.name}</td>
                 <td>-</td>
               </tr>
             )}
