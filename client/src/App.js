@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } from 'reactstrap';
 import { HashRouter, Route, Redirect, Link, Switch } from 'react-router-dom';
 import './App.css';
-import EntryForm from './EntryForm';
-import ReceiptList from './ReceiptList';
-import BuddyList from './BuddyList';
+import EntryForm from './components/EntryForm';
+import ReceiptList from './components/ReceiptList';
+import BuddyList from './components/BuddyList';
 
 class App extends Component {
 

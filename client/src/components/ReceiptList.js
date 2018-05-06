@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, NavLink } from 'reactstrap';
+import { Nav, NavItem, NavLink } from 'reactstrap';
 
 class ReceiptList extends Component {
 
