@@ -52,6 +52,20 @@
   margin-bottom: -16px;
 }
 
+.MoneyIO-loading {
+  border: 12px solid #f3f3f3; /* Light grey */
+  border-top: 12px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: MoneyIO-loading-spin 1s linear infinite;
+}
+
+@keyframes MoneyIO-loading-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @keyframes MoneyIO-entry-form-flyin {
   from { transform: translateX(-50vw); opacity: 0.0; }
   to { transform: translateX(0); opacity: 1.0; }

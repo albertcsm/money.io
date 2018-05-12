@@ -10,6 +10,7 @@ import rootReducer from './reducers';
 import { auth } from './firebaseApp.js';
 
 import './App.css';
+import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
 import EntryForm from './components/EntryForm';
 import ReceiptList from './components/ReceiptList';
@@ -27,6 +28,7 @@ class App extends Component {
     this.logout = this.logout.bind(this);
     this.state = { 
       user: null,
+      authenticating: true,
       isOpen: false
     };
   }
@@ -34,6 +36,7 @@ class App extends Component {
   componentWillMount() {
     auth.onAuthStateChanged(user => {
       this.setState({
+        authenticating: false,
         user
       });
     });
@@ -100,7 +103,7 @@ class App extends Component {
                 </div>
               </div>
             </div>
-            : <LoginForm/>
+            : (this.state.authenticating ? <Loading/> : <LoginForm/>)
           }
         </HashRouter>
       </Provider>
