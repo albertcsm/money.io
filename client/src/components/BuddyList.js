@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
+
 import { Nav, NavItem, NavLink } from 'reactstrap';
+import { connect } from 'react-redux'
+
+import { fetchBuddies } from '../actions/buddyActions.js'
 
 class BuddyList extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      buddies: [],
       subList: 'closeBuddies'
     }
   }
 
   componentDidMount() {
-    fetch('/api/buddies')
-      .then(res => res.json())
-      .then(response => this.setState({ buddies : response._embedded.buddies }));
+    this.props.fetchBuddies();
   }
 
   setSubList(subListName) {
@@ -45,10 +46,10 @@ class BuddyList extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.buddies.map(buddy =>
+            {this.props.buddies.map(buddy =>
               <tr key={buddy.id}>
                 <td>{buddy.name}</td>
-                <td>-</td>
+                <td>{buddy.balance}</td>
               </tr>
             )}
           </tbody>
@@ -59,4 +60,12 @@ class BuddyList extends Component {
 
 }
 
-export default BuddyList;
+const mapStateToProps = state => ({
+  buddies: state.buddies.items
+})
+
+const mapDispatcherToProps = dispatch => ({
+  fetchBuddies : () => dispatch(fetchBuddies()),
+});
+
+export default connect(mapStateToProps, mapDispatcherToProps)(BuddyList);

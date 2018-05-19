@@ -4,21 +4,15 @@ import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } f
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
-import { auth } from './firebaseApp.js';
 
+import { auth } from './firebaseApp.js';
+import store from './store.js';
 import './App.css';
 import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
 import EntryForm from './components/EntryForm';
 import ReceiptList from './components/ReceiptList';
 import BuddyList from './components/BuddyList';
-
-const initialState = {};
-const middlewares = [thunk];
-const store = createStore(rootReducer , initialState, applyMiddleware(...middlewares));
 
 class App extends Component {
 
