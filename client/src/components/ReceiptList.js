@@ -12,11 +12,11 @@ class ReceiptList extends Component {
   render() {
     let rows = this.props.receipts.map((receipt, index) => (
       <tr key={index}>
-        <td>{receipt.time}</td>
+        <td>{new Date(receipt.time * 1000).toLocaleString()}</td>
         <td>{receipt.restaurant}</td>
-        <td>{receipt.paidBy}</td>
-        <td>Someone...</td>
-        <td>689.4</td>
+        <td>{receipt.participants.filter(p => p.paidAmount > 0).map(p => p.name).join(', ')}</td>
+        <td>{receipt.participants.filter(p => p.paidAmount <= 0).map(p => p.name).join(', ')}</td>
+        <td>{receipt.participants.filter(p => p.paidAmount > 0).map(p => p.paidAmount).reduce((a,b)=>a+b)}</td>
       </tr>
     ));
     return (
