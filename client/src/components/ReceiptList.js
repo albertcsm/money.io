@@ -1,12 +1,26 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
-import { fetchReceipts, setSubList } from '../actions/receiptActions';
+
+import * as Actions from '../actions'
 
 class ReceiptList extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      subList: 'paidByMe'
+    }
+  }
+
   componentWillMount() {
-    this.props.fetchReceipts();
+    this.props.dispatch(Actions.fetchUsers());
+    this.props.dispatch(Actions.fetchGroupTransactions());
+    this.props.dispatch(Actions.fetchTransactions());
+  }
+
+  setSubList(subListName) {
+    this.setState({ subList: subListName });
   }
 
   render() {
@@ -24,13 +38,13 @@ class ReceiptList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.props.subList === 'paidByMe'} onClick={() => this.props.setSubList('paidByMe')}>Paid by me</NavLink>
+              <NavLink href="#" active={this.state.subList === 'paidByMe'} onClick={() => this.setSubList('paidByMe')}>Paid by me</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.subList === 'involved'} onClick={() => this.props.setSubList('involved')}>I was involved</NavLink>
+              <NavLink href="#" active={this.state.subList === 'involved'} onClick={() => this.setSubList('involved')}>I was involved</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.subList === 'all'} onClick={() => this.props.setSubList('all')}>All</NavLink>
+              <NavLink href="#" active={this.state.subList === 'all'} onClick={() => this.setSubList('all')}>All</NavLink>
             </NavItem>
           </Nav>
         </div>
@@ -54,14 +68,24 @@ class ReceiptList extends Component {
 
 }
 
+function getReceiptList(groupTransactions, transactions, users) {
+  return Object.keys(groupTransactions)
+    .filter(transactionId => transactions[transactionId])
+    .map(transactionId => ({ 
+      id: transactionId,
+      time: transactions[transactionId].time,
+      restaurant: transactions[transactionId].title,
+      participants: Object.keys(transactions[transactionId].participants)
+        .map(userId => ({
+          userId: userId,
+          name: (users[userId] ? users[userId].name : ''),
+          paidAmount: transactions[transactionId].participants[userId]
+        }))
+    }));
+}
+
 const mapStateToProps = state => ({
-  receipts : state.receipts.items,
-  subList: state.receipts.subList
+  receipts : getReceiptList(state.groupTransactions, state.transactions, state.users)
 });
 
-const mapDispatcherToProps = dispatch => ({
-  fetchReceipts : () => dispatch(fetchReceipts()),
-  setSubList: (subList) => dispatch(setSubList(subList))
-});
-
-export default connect(mapStateToProps, mapDispatcherToProps)(ReceiptList);
+export default connect(mapStateToProps)(ReceiptList);

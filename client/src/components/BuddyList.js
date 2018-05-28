@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux'
 
-import { fetchBuddies } from '../actions/buddyActions.js'
+import * as Actions from '../actions'
 
 class BuddyList extends Component {
 
@@ -15,7 +15,8 @@ class BuddyList extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchBuddies();
+    this.props.dispatch(Actions.fetchGroupUsers());
+    this.props.dispatch(Actions.fetchUsers());
   }
 
   setSubList(subListName) {
@@ -60,12 +61,13 @@ class BuddyList extends Component {
 
 }
 
+function getBuddyList(groupUsers, users) {
+  return Object.keys(groupUsers)
+    .map(userId => ({ id: userId, ...users[userId], ...groupUsers[userId] }));
+}
+
 const mapStateToProps = state => ({
-  buddies: state.buddies.items
+  buddies: getBuddyList(state.groupUsers, state.users)
 })
 
-const mapDispatcherToProps = dispatch => ({
-  fetchBuddies : () => dispatch(fetchBuddies()),
-});
-
-export default connect(mapStateToProps, mapDispatcherToProps)(BuddyList);
+export default connect(mapStateToProps)(BuddyList);
