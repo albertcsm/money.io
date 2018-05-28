@@ -1,5 +1,13 @@
 import { database } from '../firebaseApp.js';
 
+export function setAuthenticated(currentUser) {
+  return { type: 'AUTHENTICATED', payload: currentUser }
+};
+
+export function setUnauthenticated() {
+  return { type: 'UNAUTHENTICATED', payload: null }
+};
+
 export function fetchGroupUsers(groupId = 'default') {
   return dispatch => {
     database.ref('groups/' + groupId + '/users').on('value', snapshot => {
@@ -32,9 +40,6 @@ export function fetchTransactions() {
   };
 };
 
-export function setSubList(subList) {
-  return {
-    type: 'SET_SUB_LIST',
-    data: subList
-  };
+export function setBuddyListFilter(filter) {
+  return { type: 'SET_BUDDY_LIST_FILTER', payload: filter };
 };

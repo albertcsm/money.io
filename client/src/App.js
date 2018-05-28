@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Redirect, Link, Switch } from 'react-router-dom';
+
 import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } from 'reactstrap';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-
-import { Provider } from 'react-redux';
+import { connect } from 'react-redux'
 
 import { auth } from './firebaseApp.js';
 import store from './store.js';
@@ -21,9 +21,7 @@ class App extends Component {
     super();
     this.toggleNav = this.toggleNav.bind(this);
     this.logout = this.logout.bind(this);
-    this.state = { 
-      user: null,
-      authenticating: true,
+    this.state = {
       isOpen: false
     };
   }
@@ -31,15 +29,14 @@ class App extends Component {
   componentWillMount() {
     auth.onAuthStateChanged(user => {
       if (user) {
+        store.dispatch(Actions.setAuthenticated(user));
         store.dispatch(Actions.fetchGroupUsers());
         store.dispatch(Actions.fetchUsers());
         store.dispatch(Actions.fetchGroupTransactions());
         store.dispatch(Actions.fetchTransactions());
+      } else {
+        store.dispatch(Actions.setUnauthenticated());
       }
-      this.setState({
-        authenticating: false,
-        user
-      });
     });
   }
 
@@ -56,61 +53,64 @@ class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <HashRouter>
-          { this.state.user ?
-            <div className="MoneyIO-App">
-              <Navbar color="primary" inverse toggleable>
-                <NavbarToggler right onClick={this.toggleNav} />
-                <NavbarBrand href="/">
-                  <span className="fa fa-credit-card"/> <span id="MoneyIO-App-Title">money.io</span>
-                </NavbarBrand>
-                <Collapse isOpen={this.state.isOpen} navbar>
-                  <Nav className="ml-auto" navbar>
-                    <NavItem>
-                      <NavLink tag={Link} to="/form">Form</NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink tag={Link} to="/receipts">Receipts</NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink tag={Link} to="/buddies">Buddies</NavLink>
-                    </NavItem>
-                    <UncontrolledDropdown>
-                      <DropdownToggle nav caret>
-                        <img className="MoneyIO-avatar" src={this.state.user.photoURL} alt={this.state.user.displayName}/>
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem header>{this.state.user.displayName}</DropdownItem>
-                        <DropdownItem divider/>
-                        <DropdownItem tag="a">
-                          <div onClick={this.logout}>
-                            Logout
-                          </div>
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </Nav>
-                </Collapse>
-              </Navbar>
-              <div className="MoneyIO-App-content">
-                <div className="container">
-                  <Switch>
-                    <Route path="/form" component={EntryForm}/>
-                    <Route path="/receipts" component={ReceiptList}/>
-                    <Route path="/buddies" component={BuddyList}/>
-                    <Redirect from="/" to="/form" />
-                  </Switch>
-                </div>
+      <HashRouter>
+        { this.props.currentUser ?
+          <div className="MoneyIO-App">
+            <Navbar color="primary" inverse toggleable>
+              <NavbarToggler right onClick={this.toggleNav} />
+              <NavbarBrand href="/">
+                <span className="fa fa-credit-card"/> <span id="MoneyIO-App-Title">money.io</span>
+              </NavbarBrand>
+              <Collapse isOpen={this.state.isOpen} navbar>
+                <Nav className="ml-auto" navbar>
+                  <NavItem>
+                    <NavLink tag={Link} to="/form">Form</NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={Link} to="/receipts">Receipts</NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink tag={Link} to="/buddies">Buddies</NavLink>
+                  </NavItem>
+                  <UncontrolledDropdown>
+                    <DropdownToggle nav caret>
+                      <img className="MoneyIO-avatar" src={this.props.currentUser.photoURL} alt={this.props.currentUser.displayName}/>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem header>{this.props.currentUser.displayName}</DropdownItem>
+                      <DropdownItem divider/>
+                      <DropdownItem tag="a">
+                        <div onClick={this.logout}>
+                          Logout
+                        </div>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </Nav>
+              </Collapse>
+            </Navbar>
+            <div className="MoneyIO-App-content">
+              <div className="container">
+                <Switch>
+                  <Route path="/form" component={EntryForm}/>
+                  <Route path="/receipts" component={ReceiptList}/>
+                  <Route path="/buddies" component={BuddyList}/>
+                  <Redirect from="/" to="/form" />
+                </Switch>
               </div>
             </div>
-            : (this.state.authenticating ? <Loading/> : <LoginForm/>)
-          }
-        </HashRouter>
-      </Provider>
+          </div>
+          : (this.props.authenticating ? <Loading/> : <LoginForm/>)
+        }
+      </HashRouter>
     );
   }
 
 }
 
-export default App;
+const mapStateToProps = state => ({
+  authenticating: state.authenticating,
+  currentUser: state.currentUser
+})
+
+export default connect(mapStateToProps)(App);

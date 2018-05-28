@@ -1,12 +1,31 @@
 const INITIAL_STATE = {
+  authenticating: true,
+  currentUser: null,
   groupUsers: [],
   users: [],
   groupTransactions: [],
-  transactions: []
+  transactions: [],
+  buddyListFilter: 'CLOSE_BUDDIES'
 };
 
 export default function rootReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case 'AUTHENTICATED':
+      return {
+        ...state,
+        authenticating: false,
+        currentUser: action.payload
+      };
+    case 'UNAUTHENTICATED':
+      return {
+        ...state,
+        authenticating: false,
+        currentUser: action.payload,
+        groupUsers: [],
+        users: [],
+        groupTransactions: [],
+        transactions: []
+      };
     case 'FETCH_GROUP_USERS_SUCCEEDED':
       return {
         ...state,
@@ -27,10 +46,10 @@ export default function rootReducer(state = INITIAL_STATE, action) {
         ...state,
         transactions: action.payload
       };
-    case 'SET_SUB_LIST':
+    case 'SET_BUDDY_LIST_FILTER':
       return {
         ...state,
-        subList: action.payload
+        buddyListFilter: action.payload
       };
     default:
       return state;
