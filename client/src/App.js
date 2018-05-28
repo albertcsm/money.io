@@ -7,12 +7,13 @@ import { Provider } from 'react-redux';
 
 import { auth } from './firebaseApp.js';
 import store from './store.js';
-import './App.css';
+import * as Actions from './actions'
 import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
 import EntryForm from './components/EntryForm';
 import ReceiptList from './components/ReceiptList';
 import BuddyList from './components/BuddyList';
+import './App.css';
 
 class App extends Component {
 
@@ -29,6 +30,12 @@ class App extends Component {
 
   componentWillMount() {
     auth.onAuthStateChanged(user => {
+      if (user) {
+        store.dispatch(Actions.fetchGroupUsers());
+        store.dispatch(Actions.fetchUsers());
+        store.dispatch(Actions.fetchGroupTransactions());
+        store.dispatch(Actions.fetchTransactions());
+      }
       this.setState({
         authenticating: false,
         user

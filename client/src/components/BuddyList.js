@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux'
 
-import * as Actions from '../actions'
-
 class BuddyList extends Component {
 
   constructor(props) {
@@ -12,11 +10,6 @@ class BuddyList extends Component {
     this.state = {
       subList: 'closeBuddies'
     }
-  }
-
-  componentDidMount() {
-    this.props.dispatch(Actions.fetchGroupUsers());
-    this.props.dispatch(Actions.fetchUsers());
   }
 
   setSubList(subListName) {

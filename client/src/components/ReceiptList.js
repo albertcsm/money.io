@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import * as Actions from '../actions'
-
 class ReceiptList extends Component {
 
   constructor(props) {
@@ -11,12 +9,6 @@ class ReceiptList extends Component {
     this.state = {
       subList: 'paidByMe'
     }
-  }
-
-  componentWillMount() {
-    this.props.dispatch(Actions.fetchUsers());
-    this.props.dispatch(Actions.fetchGroupTransactions());
-    this.props.dispatch(Actions.fetchTransactions());
   }
 
   setSubList(subListName) {

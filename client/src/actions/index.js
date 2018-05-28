@@ -1,7 +1,6 @@
 import { database } from '../firebaseApp.js';
 
 export function fetchGroupUsers(groupId = 'default') {
-  console.log('fetch group users');
   return dispatch => {
     database.ref('groups/' + groupId + '/users').on('value', snapshot => {
       dispatch({ type: 'FETCH_GROUP_USERS_SUCCEEDED', payload: snapshot.val() });
@@ -18,7 +17,6 @@ export function fetchUsers() {
 };
 
 export function fetchGroupTransactions(groupId = 'default') {
-  console.log('fetch group transactions');
   return dispatch => {
     database.ref('groups/' + groupId + '/transactions').on('value', snapshot => {
       dispatch({ type: 'FETCH_GROUP_TRANSACTIONS_SUCCEEDED', payload: snapshot.val() });
