@@ -2,17 +2,13 @@ import React, { Component } from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
 
+import store from '../store.js';
+import * as Actions from '../actions';
+
 class ReceiptList extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      subList: 'paidByMe'
-    }
-  }
-
-  setSubList(subListName) {
-    this.setState({ subList: subListName });
+  setReceiptListFilter(filter) {
+    store.dispatch(Actions.setReceiptListFilter(filter));
   }
 
   render() {
@@ -30,13 +26,13 @@ class ReceiptList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.state.subList === 'paidByMe'} onClick={() => this.setSubList('paidByMe')}>Paid by me</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'PAID_BY_ME'} onClick={() => this.setReceiptListFilter('PAID_BY_ME')}>Paid by me</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.state.subList === 'involved'} onClick={() => this.setSubList('involved')}>I was involved</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'INVOLVED'} onClick={() => this.setReceiptListFilter('INVOLVED')}>I was involved</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.state.subList === 'all'} onClick={() => this.setSubList('all')}>All</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'ALL'} onClick={() => this.setReceiptListFilter('ALL')}>All</NavLink>
             </NavItem>
           </Nav>
         </div>
@@ -76,8 +72,24 @@ function getReceiptList(groupTransactions, transactions, users) {
     }));
 }
 
+function getFilteredReceiptList(filter, originalReceiptList, transactions, currentUser) {
+  let filtered = [];
+  if (filter == 'PAID_BY_ME') {
+    filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid] > 0);
+  } else if (filter == 'INVOLVED') {
+    filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid])
+  } else {
+    filtered = originalReceiptList;
+  }
+  return filtered.slice(0, 50);
+}
+
 const mapStateToProps = state => ({
-  receipts : getReceiptList(state.groupTransactions, state.transactions, state.users)
+  receipts : getFilteredReceiptList(state.receiptListFilter,
+    getReceiptList(state.groupTransactions, state.transactions, state.users),
+    state.transactions,
+    state.currentUser),
+  receiptListFilter: state.receiptListFilter
 });
 
 export default connect(mapStateToProps)(ReceiptList);

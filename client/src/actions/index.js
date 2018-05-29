@@ -43,3 +43,7 @@ export function fetchTransactions() {
 export function setBuddyListFilter(filter) {
   return { type: 'SET_BUDDY_LIST_FILTER', payload: filter };
 };
+
+export function setReceiptListFilter(filter) {
+  return { type: 'SET_RECEIPT_LIST_FILTER', payload: filter };
+};
