@@ -25,9 +25,10 @@ class ReceiptEditor extends Component {
     };
     let total = 0;
     receipt.items.forEach(item => {
-      if (item.amount > 0) {
-        transaction.participants[item.buddyUserId] = -item.amount;
-        total += item.amount;
+      const amount = Number(item.amount);
+      if (amount > 0) {
+        transaction.participants[item.buddyUserId] = -amount;
+        total += amount;
       }
     });
     transaction.participants[this.props.currentUser.uid] = total;
