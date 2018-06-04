@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import { Form, FormGroup, Label, Button, UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem, InputGroup, InputGroupAddon, InputGroupButton, Input } from 'reactstrap';
 import Moment from 'moment';
-import uuidv4 from 'uuid/v4';
+
+import EntryFormItem from './EntryFormItem';
 
 const translations = {
   discount: 'Discount',
@@ -15,60 +17,71 @@ class EntryForm extends Component {
   constructor() {
     super();
     const initialState = {
-      restaurant: '',
-      date: Date.now(),
-      entryItems: [ {
-        id: uuidv4(),
-        buddy: '',
-        dish: '',
-        price: ''
-      }],
       adjustments: [
-        {
-          id: uuidv4(),
-          type: 'discount',
-          unit: 'inDollar',
-          value: '',
-          enabled: false
-        },
-        {
-          id: uuidv4(),
-          type: 'serviceCharge',
-          unit: 'inPercent',
-          value: 10,
-          enabled: false
-        },
+        // {
+        //   id: uuidv4(),
+        //   type: 'discount',
+        //   unit: 'inDollar',
+        //   value: '',
+        //   enabled: false
+        // },
+        // {
+        //   id: uuidv4(),
+        //   type: 'serviceCharge',
+        //   unit: 'inPercent',
+        //   value: 10,
+        //   enabled: false
+        // },
       ]
     };
     this.state = initialState;
   }
 
-  handleFormChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const field = target.name;
-    this.setState({
-      [field]: value
-    });
+  publishReceipt() {
+    this.props.onReceiptPublish(this.props.receipt);
+  }
+
+  handleFieldUpdate(field, value) {
+    if (this.props.onReceiptUpdate) {
+      this.props.onReceiptUpdate({
+        ...this.props.receipt,
+        [field]: value
+      });
+    }
   }
 
   addNewEntryItem() {
-    const entryItems = this.state.entryItems.slice();
-    entryItems.push({
-      'id': uuidv4(),
-      'buddy': '',
-      'dish': '',
-      'price': ''
-    });
-    this.setState({ entryItems: entryItems });
+    if (this.props.onReceiptUpdate) {
+      this.props.onReceiptUpdate({
+        ...this.props.receipt,
+        items: [ ...this.props.receipt.items, {} ]
+      });
+    }
   }
 
-  handleItemChange(i, field, value) {
-    const entryItems = this.state.entryItems.slice();
-    const updatedEntryItems = Object.assign({}, entryItems[i]);
-    updatedEntryItems[field] = value;
-    entryItems[i] = updatedEntryItems;
-    this.setState({ entryItems: entryItems });
+  handleItemUpdate(i, item) {
+    const items = this.props.receipt.items;
+    items[i] = item;
+    if (this.props.onReceiptUpdate) {
+      this.props.onReceiptUpdate({
+        ...this.props.receipt,
+        items: items
+      });
+    }
+  }
+
+  removeEntryItem(i) {
+    if (this.props.receipt.items.length > 1) {
+      const items = this.props.receipt.items.slice();
+      items.splice(i, 1);
+
+      if (this.props.onReceiptUpdate) {
+        this.props.onReceiptUpdate({
+          ...this.props.receipt,
+          items: items
+        });
+      }
+    }
   }
 
   setAdjustmentOption(id, field, value) {
@@ -85,14 +98,6 @@ class EntryForm extends Component {
     }
   }
 
-  removeEntryItem(i) {
-    if (this.state.entryItems.length > 1) {
-      const entryItems = this.state.entryItems.slice();
-      entryItems.splice(i, 1)
-      this.setState({ entryItems: entryItems });
-    }
-  }
-
   renderBasicInfo() {
     Moment.locale('en');
     return (
@@ -102,7 +107,7 @@ class EntryForm extends Component {
             <Label for="restaurant">Restaurant</Label>
           </div>
           <div className="col-8">
-            <Input id="restaurant" type="text" value={this.state.restaurant} name="restaurant" onChange={this.handleFormChange}/>
+            <Input id="restaurant" type="text" value={this.props.receipt.restaurant} name="restaurant" onChange={(event) => this.handleFieldUpdate('restaurant', event.target.value)}/>
           </div>
         </FormGroup>
         <FormGroup row>
@@ -110,7 +115,7 @@ class EntryForm extends Component {
             <Label for="date">Date</Label>
           </div>
           <div className="col-8">
-            <Input id="date" type="text" value={Moment(this.state.date).format('YYYY-MM-DD')} name="date" onChange={this.handleFormChange}/>
+            <Input id="date" type="text" value={Moment(this.props.receipt.time).format('YYYY-MM-DD')} name="date" onChange={(event) => this.handleFieldUpdate('time', event.target.value)}/>
           </div>
         </FormGroup>
       </Form>
@@ -160,9 +165,9 @@ class EntryForm extends Component {
   }
 
   renderSummary() {
-    var total = this.state.entryItems
-      .map(item => item.price || 0)
-      .reduce((x1, x2) => x1 + x2);
+    let total = this.props.receipt.items
+      .map(item => item.amount || 0)
+      .reduce((x1, x2) => Number(x1) + Number(x2), 0);
     this.state.adjustments.forEach(adjustment => {
       if (adjustment.enabled) {
         var sign = 0;
@@ -208,14 +213,9 @@ class EntryForm extends Component {
         <div className="card-block">
           {this.renderBasicInfo()}
         </div>
-        {this.state.entryItems.map((entryItem, i) => (
-          <EntryFormItem key={entryItem.id}
-            buddy={entryItem.buddy}
-            dish={entryItem.dish}
-            price={entryItem.price}
-            onBuddyChange={(value) => this.handleItemChange(i, 'buddy', value)}
-            onDishChange={(value) => this.handleItemChange(i, 'dish', value)}
-            onPriceChange={(value) => this.handleItemChange(i, 'price', Number(value))}
+        {this.props.receipt.items.map((item, i) => (
+          <EntryFormItem key={i} item={item}
+            onItemUpdate={(item) => this.handleItemUpdate(i, item)}
             onRemove={() => this.removeEntryItem(i)}/>
         ))}
         <div className="text-center">
@@ -227,46 +227,7 @@ class EntryForm extends Component {
           {this.renderBillAdjustments()}
           {this.renderSummary()}
           <div className="text-right">
-            <Button color="primary">Publish</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-}
-
-
-class EntryFormItem extends Component {
-
-  render() {
-    return (
-      <div className="MoneyIO-entry-form-item">
-        <div className="row">
-          <div className="col-7">
-            <div className="form-group">
-              <Input type="text" value={this.props.buddy} placeholder="Who?" onChange={(event) => this.props.onBuddyChange(event.target.value)}/>
-            </div>
-          </div>
-          <div className="col-5 text-right">
-            <Button color="link" className="MoneyIO-entry-form-item-close-button" onClick={this.props.onRemove}>
-              <span className="fa fa-remove"/>
-            </Button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-7">
-            <div className="form-group">
-              <Input type="text" value={this.props.dish} placeholder="What?" onChange={(event) => this.props.onDishChange(event.target.value)}/>
-            </div>
-          </div>
-          <div className="col-5">
-            <div className="MoneyIO-entry-from-price-field">
-              <InputGroup>
-                <InputGroupAddon><span className="fa fa-usd"/></InputGroupAddon>
-                <Input type="number" step="any" defaultValue={this.props.price} placeholder="Price?" onChange={(event) => this.props.onPriceChange(event.target.value)}/>
-              </InputGroup>
-            </div>
+            <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publishReceipt()}>Publish</Button>
           </div>
         </div>
       </div>

@@ -5,8 +5,13 @@ const INITIAL_STATE = {
   users: [],
   groupTransactions: [],
   transactions: [],
+  receiptForNewEntry: {
+    restaurant: '',
+    items: []
+  },
   buddyListFilter: 'CLOSE_BUDDIES',
-  receiptListFilter: 'PAID_BY_ME'
+  receiptListFilter: 'PAID_BY_ME',
+  publishingTransaction: false
 };
 
 export default function rootReducer(state = INITIAL_STATE, action) {
@@ -47,6 +52,21 @@ export default function rootReducer(state = INITIAL_STATE, action) {
         ...state,
         transactions: action.payload
       };
+    case 'INITIALIZE_RECEIPT':
+      return {
+        ...state,
+        receiptForNewEntry: action.payload
+      }
+    case 'PUBLISH_TRANSACTION_START':
+      return {
+        ...state,
+        publishingTransaction: true
+      };
+    case 'PUBLISH_TRANSACTION_SUCCEEDED':
+      return {
+        ...state,
+        publishingTransaction: false
+      };
     case 'SET_BUDDY_LIST_FILTER':
       return {
         ...state,
@@ -56,6 +76,11 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         receiptListFilter: action.payload
+      };
+    case 'SET_RECEIPT_FOR_NEW_ENTRY':
+      return {
+        ...state,
+        receiptForNewEntry: action.payload
       };
     default:
       return state;

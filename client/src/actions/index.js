@@ -40,6 +40,39 @@ export function fetchTransactions() {
   };
 };
 
+export function initializeReceipt() {
+  return dispatch => {
+    dispatch({ type: 'INITIALIZE_RECEIPT', payload: { 
+      transactionId: database.ref().child('transactions').push().key,
+      time: Date.now(),
+      restaurant: 'True Heart',
+      items: [
+        {
+          buddyUserId: '072782fe-cb96-4aea-a0ad-f3da250187c2',
+          buddyUserName: 'Jon Snow',
+          amount: 100
+        }
+      ]
+    }});
+  }
+}
+
+export function publishTransaction(transaction, groupId = 'default') {
+  return dispatch => {
+    dispatch({ type: 'PUBLISH_TRANSACTION_START', payload: null });
+
+    var transactionId = database.ref().child('transactions').push().key;
+
+    var updates = {};
+    updates['/transactions/' + transactionId] = { ...transaction };
+    updates['/groups/' + groupId + '/transactions/' + transactionId] = true;
+
+    database.ref().update(updates).then(() => {
+      dispatch({ type: 'PUBLISH_TRANSACTION_SUCCEEDED', payload: null });
+    });
+  };
+};
+
 export function setBuddyListFilter(filter) {
   return { type: 'SET_BUDDY_LIST_FILTER', payload: filter };
 };
@@ -47,3 +80,7 @@ export function setBuddyListFilter(filter) {
 export function setReceiptListFilter(filter) {
   return { type: 'SET_RECEIPT_LIST_FILTER', payload: filter };
 };
+
+export function setReceiptForNewEntry(receipt) {
+  return { type: 'SET_RECEIPT_FOR_NEW_ENTRY', payload: receipt };
+}

@@ -3,14 +3,14 @@ import { HashRouter, Route, Redirect, Link, Switch } from 'react-router-dom';
 
 import { Navbar, NavbarToggler, NavbarBrand, Collapse, Nav, NavItem, NavLink } from 'reactstrap';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { auth } from './firebaseApp.js';
 import store from './store.js';
 import * as Actions from './actions'
 import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
-import EntryForm from './components/EntryForm';
+import ReceiptEditor from './containers/ReceiptEditor';
 import ReceiptList from './components/ReceiptList';
 import BuddyList from './components/BuddyList';
 import './App.css';
@@ -92,7 +92,7 @@ class App extends Component {
             <div className="MoneyIO-App-content">
               <div className="container">
                 <Switch>
-                  <Route path="/form" component={EntryForm}/>
+                  <Route path="/form" component={ReceiptEditor}/>
                   <Route path="/receipts" component={ReceiptList}/>
                   <Route path="/buddies" component={BuddyList}/>
                   <Redirect from="/" to="/form" />
