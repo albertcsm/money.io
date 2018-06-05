@@ -81,7 +81,7 @@ function getFilteredReceiptList(filter, originalReceiptList, transactions, curre
   } else {
     filtered = originalReceiptList;
   }
-  return filtered.slice(0, 50);
+  return filtered.sort((r1,r2) => r1.time < r2.time).slice(0, 50);
 }
 
 const mapStateToProps = state => ({
