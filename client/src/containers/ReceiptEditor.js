@@ -37,14 +37,20 @@ class ReceiptEditor extends Component {
 
   render() {
     return (<EntryForm receipt={this.props.receipt}
+      users={this.props.users}
       onReceiptUpdate={(receipt) => this.updateReceipt(receipt)}
       onReceiptPublish={(receipt) => this.publishReceipt(receipt)}/>);
   }
 
 }
 
+function getUserList(users) {
+  return Object.keys(users).map(key => ({ ...users[key], id: key }));
+}
+
 const mapStateToProps = state => ({
   receipt: state.receiptForNewEntry,
+  users: getUserList(state.users),
   currentUser: state.currentUser
 });
 

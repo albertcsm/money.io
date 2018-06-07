@@ -52,9 +52,13 @@ class EntryForm extends Component {
 
   addNewEntryItem() {
     if (this.props.onReceiptUpdate) {
+      const newItem = {
+        'buddyUserName': '',
+        'buddyUserId': null
+      };
       this.props.onReceiptUpdate({
         ...this.props.receipt,
-        items: [ ...this.props.receipt.items, {} ]
+        items: [ ...this.props.receipt.items, newItem ]
       });
     }
   }
@@ -214,7 +218,7 @@ class EntryForm extends Component {
           {this.renderBasicInfo()}
         </div>
         {this.props.receipt.items.map((item, i) => (
-          <EntryFormItem key={i} item={item}
+          <EntryFormItem key={i} item={item} users={this.props.users}
             onItemUpdate={(item) => this.handleItemUpdate(i, item)}
             onRemove={() => this.removeEntryItem(i)}/>
         ))}
