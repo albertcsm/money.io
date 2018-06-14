@@ -9,7 +9,9 @@ import EntryForm from '../components/EntryForm'
 class ReceiptEditor extends Component {
 
   componentWillMount() {
-    store.dispatch(Actions.initializeReceipt());
+    if (!this.props.receipt.transactionId) {
+      store.dispatch(Actions.initializeReceipt());
+    }
   }
 
   updateReceipt(receipt) {
