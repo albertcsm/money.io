@@ -56,9 +56,8 @@ class ReceiptList extends Component {
 
 }
 
-function getReceiptList(groupTransactions, transactions, users) {
-  return Object.keys(groupTransactions)
-    .filter(transactionId => transactions[transactionId])
+function getReceiptList(transactions, users) {
+  return Object.keys(transactions)
     .map(transactionId => ({ 
       id: transactionId,
       time: transactions[transactionId].time,
@@ -86,7 +85,7 @@ function getFilteredReceiptList(filter, originalReceiptList, transactions, curre
 
 const mapStateToProps = state => ({
   receipts : getFilteredReceiptList(state.receiptListFilter,
-    getReceiptList(state.groupTransactions, state.transactions, state.users),
+    getReceiptList(state.transactions, state.users),
     state.transactions,
     state.currentUser),
   receiptListFilter: state.receiptListFilter

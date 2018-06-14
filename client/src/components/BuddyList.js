@@ -50,19 +50,16 @@ class BuddyList extends Component {
 
 }
 
-function getBuddyList(groupUsers, users) {
+function getBuddyList(groupUsers, users, transactions) {
   return Object.keys(groupUsers)
-    .map(userId => ({ id: userId, ...users[userId], ...groupUsers[userId] }));
-}
-
-function getTopDebtors(groupUsers, users, transactions, currentUser) {
-  const myTransactions = Object.keys(transactions)
-    .map(transactionId => transactions[transactionId])
-    .filter(transaction => transaction.participants[currentUser.uid]);
-  
-  const closeBuddies = new Set(myTransactions.flatMap(transaction => Object.keys(transaction.participants)));
-
-  return getBuddyList(groupUsers, users).filter(buddy => closeBuddies.has(buddy.id));
+    .map(userId => ({
+      id: userId,
+      ...users[userId],
+      ...groupUsers[userId],
+      balance: Object.values(transactions)
+        .map(t => t.participants[userId] ? t.participants[userId] : 0)
+        .reduce((a,b) => a+b, 0)
+    }));
 }
 
 function getFilteredBuddyList(filter, originalBuddyList, transactions, currentUser) {
@@ -85,7 +82,7 @@ function getFilteredBuddyList(filter, originalBuddyList, transactions, currentUs
 
 const mapStateToProps = state => ({
   buddies: getFilteredBuddyList(state.buddyListFilter,
-    getBuddyList(state.groupUsers, state.users),
+    getBuddyList(state.groupUsers, state.users, state.transactions),
     state.transactions,
     state.currentUser),
   buddyListFilter: state.buddyListFilter

@@ -32,7 +32,6 @@ class App extends Component {
         store.dispatch(Actions.setAuthenticated(user));
         store.dispatch(Actions.fetchGroupUsers());
         store.dispatch(Actions.fetchUsers());
-        store.dispatch(Actions.fetchGroupTransactions());
         store.dispatch(Actions.fetchTransactions());
       } else {
         store.dispatch(Actions.setUnauthenticated());

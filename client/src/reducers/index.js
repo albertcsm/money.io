@@ -3,7 +3,6 @@ const INITIAL_STATE = {
   currentUser: null,
   groupUsers: [],
   users: [],
-  groupTransactions: [],
   transactions: [],
   receiptForNewEntry: {
     restaurant: '',
@@ -41,11 +40,6 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         users: action.payload
-      };
-    case 'FETCH_GROUP_TRANSACTIONS_SUCCEEDED':
-      return {
-        ...state,
-        groupTransactions: action.payload
       };
     case 'FETCH_TRANSACTIONS_SUCCEEDED':
       return {

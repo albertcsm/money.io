@@ -24,17 +24,9 @@ export function fetchUsers() {
   };
 };
 
-export function fetchGroupTransactions(groupId = 'default') {
+export function fetchTransactions(groupId = 'default') {
   return dispatch => {
     database.ref('groups/' + groupId + '/transactions').on('value', snapshot => {
-      dispatch({ type: 'FETCH_GROUP_TRANSACTIONS_SUCCEEDED', payload: snapshot.val() });
-    });
-  };
-};
-
-export function fetchTransactions() {
-  return dispatch => {
-    database.ref('transactions').on('value', snapshot => {
       dispatch({ type: 'FETCH_TRANSACTIONS_SUCCEEDED', payload: snapshot.val() });
     });
   };
@@ -61,13 +53,10 @@ export function publishTransaction(transaction, groupId = 'default') {
   return dispatch => {
     dispatch({ type: 'PUBLISH_TRANSACTION_START', payload: null });
 
-    var transactionId = database.ref().child('transactions').push().key;
+    var transactionWithoutId = { ...transaction };
+    delete transactionWithoutId.id;
 
-    var updates = {};
-    updates['/transactions/' + transactionId] = { ...transaction };
-    updates['/groups/' + groupId + '/transactions/' + transactionId] = true;
-
-    database.ref().update(updates).then(() => {
+    database.ref('/groups/' + groupId + '/transactions/' + transaction.id).set(transactionWithoutId).then(() => {
       dispatch({ type: 'PUBLISH_TRANSACTION_SUCCEEDED', payload: null });
     });
   };

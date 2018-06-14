@@ -1,6 +1,46 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "users": {
+      ".read": "auth != null",
+      "$userId": {
+      	".write": "$userId === auth.uid",
+        ".validate": "newData.hasChild('name')",
+        "name": {
+          ".validate": "newData.isString()"
+        },
+        "$other": { ".validate": false }
+      }
+    },
+    "groups": {
+      "$groupId": {
+        ".read": "data.child('users').hasChild(auth.uid)",
+        ".validate": "newData.hasChild('users')",
+        "users": {
+          ".validate": "newData.hasChildren()",
+          "$userId": {}
+        },
+        "transactions": {
+          "$transactionId": {
+            ".write": "data.parent().parent().child('users').hasChild(auth.uid) && !data.exists()",
+            ".validate": "newData.hasChild('participants') && newData.hasChild('time')",
+            "time": {
+              ".validate": "newData.isNumber() && newData.val() < (now + 600000)"
+            },
+            "title": {
+              ".validate": "newData.isString()"
+            },
+            "participants": {
+              ".validate": "newData.child(auth.uid).isNumber()",
+              "$userId": {
+                ".validate": "newData.parent().parent().parent().parent().child('users').hasChild($userId)"
+              }
+            },
+            "$other": { ".validate": false }
+    	    }
+        },
+        "$other": { ".validate": false }
+      }
+    },
+    "$other": { ".validate": false }
   }
 }
