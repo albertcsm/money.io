@@ -35,15 +35,15 @@ class EntryFormItem extends Component {
     const getSuggestions = value => {
       const inputValue = value.trim().toLowerCase();
       const inputLength = inputValue.length;
-    
-      return inputLength === 0 ? [] : this.props.users.filter(user =>
+      return this.props.users.filter(user =>
         user.name.toLowerCase().slice(0, inputLength) === inputValue
       );
     };    
     const onSuggestionsFetchRequested = ({value,reason}) => this.setState({ buddySuggestions: getSuggestions(value) });
     const onSuggestionsClearRequested = () => this.setState({ buddySuggestions: [] });
+    const shouldRenderSuggestions = () => true;
     const getSuggestionValue = suggestion => suggestion.name;
-    const renderSuggestion = suggestion => { return suggestion.name; };
+    const renderSuggestion = suggestion => suggestion.name;
 
     const theme = {
       input: 'form-control',
@@ -63,6 +63,7 @@ class EntryFormItem extends Component {
                 suggestions={this.state.buddySuggestions}
                 onSuggestionsFetchRequested={onSuggestionsFetchRequested}
                 onSuggestionsClearRequested={onSuggestionsClearRequested}
+                shouldRenderSuggestions={shouldRenderSuggestions}
                 getSuggestionValue={getSuggestionValue}
                 renderSuggestion={renderSuggestion}
                 inputProps={{

@@ -37,12 +37,12 @@ export function initializeReceipt() {
     dispatch({ type: 'INITIALIZE_RECEIPT', payload: { 
       transactionId: database.ref().child('transactions').push().key,
       time: Date.now(),
-      restaurant: 'True Heart',
+      restaurant: '',
       items: [
         {
-          buddyUserId: '072782fe-cb96-4aea-a0ad-f3da250187c2',
-          buddyUserName: 'Jon Snow',
-          amount: 100
+          buddyUserId: '',
+          buddyUserName: '',
+          amount: null
         }
       ]
     }});
