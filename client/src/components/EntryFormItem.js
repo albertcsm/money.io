@@ -34,9 +34,8 @@ class EntryFormItem extends Component {
   render() {
     const getSuggestions = value => {
       const inputValue = value.trim().toLowerCase();
-      const inputLength = inputValue.length;
       return this.props.users.filter(user =>
-        user.name.toLowerCase() != inputValue && user.name.toLowerCase().indexOf(inputValue) != -1
+        user.name.toLowerCase() !== inputValue && user.name.toLowerCase().indexOf(inputValue) !== -1
       );
     };    
     const onSuggestionsFetchRequested = ({value,reason}) => this.setState({ buddySuggestions: getSuggestions(value) });

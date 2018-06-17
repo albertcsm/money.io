@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
 
 import store from '../store.js';
 import * as Actions from '../actions';
+
+const TransactionFilter = {
+  PAID_BY_ME: 'PAID_BY_ME',
+  INVOLVED: 'INVOLVED',
+  ALL: 'ALL',
+};
 
 class ReceiptList extends Component {
 
@@ -28,13 +33,13 @@ class ReceiptList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'PAID_BY_ME'} onClick={() => this.setTransactionListFilter('PAID_BY_ME')}>Paid by me</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.PAID_BY_ME} onClick={() => this.setTransactionListFilter(TransactionFilter.PAID_BY_ME)}>Paid by me</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'INVOLVED'} onClick={() => this.setTransactionListFilter('INVOLVED')}>I was involved</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.INVOLVED} onClick={() => this.setTransactionListFilter(TransactionFilter.INVOLVED)}>I was involved</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'ALL'} onClick={() => this.setTransactionListFilter('ALL')}>All</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.ALL} onClick={() => this.setTransactionListFilter(TransactionFilter.ALL)}>All</NavLink>
             </NavItem>
           </Nav>
         </div>
@@ -75,9 +80,9 @@ function getReceiptList(transactions, users) {
 
 function getFilteredReceiptList(filter, originalReceiptList, transactions, currentUser) {
   let filtered = [];
-  if (filter == 'PAID_BY_ME') {
+  if (filter === 'PAID_BY_ME') {
     filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid] > 0);
-  } else if (filter == 'INVOLVED') {
+  } else if (filter === 'INVOLVED') {
     filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid])
   } else {
     filtered = originalReceiptList;
