@@ -9,7 +9,7 @@
   padding: 0.5em 0.5em !important;  /* make it thinner */
 } 
 
-.form-control-label {
+.MoneyIO-form-label {
   font-weight: bold;
   vertical-align: middle;
 }
@@ -20,7 +20,7 @@
 
 .MoneyIO-entry-form-item {
   background-color: #eee;
-  margin: 0em 0em 0.5em 0em;    /* touch the card edge, leave some space below for shadow */
+  margin: 0em -1.25rem 0.25rem -1.25rem;    /* touch the card edge, leave some space below for shadow */
   padding: 1.1em 1.1em 0.3em 1.1em;
   box-shadow: 0em 0.2em 0.4em #ccc;
   animation: MoneyIO-entry-form-flyin 0.2s ease-out;

@@ -35,7 +35,7 @@ class BuddyList extends Component {
           </Nav>
         </div>
         <table className="table">
-          <thead className="thead-default">
+          <thead>
             <tr>
               <th>Name</th>
               <th>Balance</th>

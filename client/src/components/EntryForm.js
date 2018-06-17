@@ -108,7 +108,7 @@ class EntryForm extends Component {
       <Form>
         <FormGroup row>
           <div className="col-4">
-            <Label for="restaurant">Restaurant</Label>
+            <Label for="restaurant" className="MoneyIO-form-label">Restaurant</Label>
           </div>
           <div className="col-8">
             <Input id="restaurant" type="text" value={this.props.receipt.restaurant} name="restaurant" onChange={(event) => this.handleFieldUpdate('restaurant', event.target.value)}/>
@@ -116,7 +116,7 @@ class EntryForm extends Component {
         </FormGroup>
         <FormGroup row>
           <div className="col-4">
-            <Label for="date">Date</Label>
+            <Label for="date" className="MoneyIO-form-label">Date</Label>
           </div>
           <div className="col-8">
             <Input id="date" type="text" value={Moment(this.props.receipt.time).format('YYYY-MM-DD')} name="date" onChange={(event) => this.handleFieldUpdate('time', event.target.value)}/>
@@ -195,11 +195,11 @@ class EntryForm extends Component {
             <Form>
               <FormGroup row>
                 <div className="col-3">
-                  <Label>Total</Label>
+                  <Label className="MoneyIO-form-label">Total</Label>
                 </div>
                 <div className="col-9">
                   <InputGroup>
-                    <InputGroupAddon><span className="fa fa-usd"/></InputGroupAddon>
+                    <InputGroupAddon addonType="prepend">$</InputGroupAddon>
                     <Input id="total" type="number" step="any" readOnly value={total}/>
                   </InputGroup>
                 </div>
@@ -214,20 +214,21 @@ class EntryForm extends Component {
   render() {
     return (
       <div className="card">
-        <div className="card-block">
+        <div className="card-body">
           {this.renderBasicInfo()}
-        </div>
-        {this.props.receipt.items.map((item, i) => (
-          <EntryFormItem key={i} item={item} users={this.props.users}
-            onItemUpdate={(item) => this.handleItemUpdate(i, item)}
-            onRemove={() => this.removeEntryItem(i)}/>
-        ))}
-        <div className="text-center">
-          <Button id="add-entry-item-button" color="link" onClick={() => this.addNewEntryItem()}>
-            <span className="fa fa-plus"/> Add
-          </Button>
-        </div>
-        <div className="card-block">
+
+          {this.props.receipt.items.map((item, i) => (
+            <EntryFormItem key={i} item={item} users={this.props.users}
+              onItemUpdate={(item) => this.handleItemUpdate(i, item)}
+              onRemove={() => this.removeEntryItem(i)}/>
+          ))}
+
+          <div className="text-center ">
+            <Button id="add-entry-item-button" color="link" onClick={() => this.addNewEntryItem()}>
+              <span className="fa fa-plus"/> Add
+            </Button>
+          </div>
+        
           {this.renderBillAdjustments()}
           {this.renderSummary()}
           <div className="text-right">

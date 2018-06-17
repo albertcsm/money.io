@@ -44,7 +44,7 @@ class ReceiptList extends Component {
           </Nav>
         </div>
         <table className="table table-hover">
-          <thead className="thead-default">
+          <thead>
             <tr>
               <th>Date</th>
               <th>Restaurant</th>
