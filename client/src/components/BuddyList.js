@@ -50,11 +50,10 @@ class BuddyList extends Component {
 
 }
 
-function getBuddyList(groupUsers, users, transactions) {
+function getBuddyList(groupUsers, transactions) {
   return Object.keys(groupUsers)
     .map(userId => ({
       id: userId,
-      ...users[userId],
       ...groupUsers[userId],
       balance: Object.values(transactions)
         .map(t => t.participants[userId] ? t.participants[userId] : 0)
@@ -82,7 +81,7 @@ function getFilteredBuddyList(filter, originalBuddyList, transactions, currentUs
 
 const mapStateToProps = state => ({
   buddies: getFilteredBuddyList(state.buddyListFilter,
-    getBuddyList(state.groupUsers, state.users, state.transactions),
+    getBuddyList(state.groupUsers, state.transactions),
     state.transactions,
     state.currentUser),
   buddyListFilter: state.buddyListFilter

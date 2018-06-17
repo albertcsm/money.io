@@ -30,9 +30,7 @@ class App extends Component {
     auth.onAuthStateChanged(user => {
       if (user) {
         store.dispatch(Actions.setAuthenticated(user));
-        store.dispatch(Actions.fetchGroupUsers());
-        store.dispatch(Actions.fetchUsers());
-        store.dispatch(Actions.fetchTransactions());
+        store.dispatch(Actions.initializeForUser(user));
       } else {
         store.dispatch(Actions.setUnauthenticated());
       }

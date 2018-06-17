@@ -85,7 +85,7 @@ function getFilteredReceiptList(filter, originalReceiptList, transactions, curre
 
 const mapStateToProps = state => ({
   receipts : getFilteredReceiptList(state.receiptListFilter,
-    getReceiptList(state.transactions, state.users),
+    getReceiptList(state.transactions, state.groupUsers),
     state.transactions,
     state.currentUser),
   receiptListFilter: state.receiptListFilter

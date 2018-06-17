@@ -8,6 +8,22 @@ export function setUnauthenticated() {
   return { type: 'UNAUTHENTICATED', payload: null }
 };
 
+export function initializeForUser(user) {
+  return dispatch => {
+    database.ref('users/' + user.uid).on('value', snapshot => {
+      const privateUserData = snapshot.val();
+      dispatch({ type: 'FETCH_USER_PRIVATE_DATA_SUCCEEDED', payload: privateUserData });
+
+      const groupIds = Object.keys(privateUserData.groups);
+      if (groupIds.length > 0) {
+        const defaultGroup = groupIds[0];
+        dispatch(fetchGroupUsers(defaultGroup));
+        dispatch(fetchTransactions(defaultGroup));
+      }
+    });
+  };
+};
+
 export function fetchGroupUsers(groupId = 'default') {
   return dispatch => {
     database.ref('groups/' + groupId + '/users').on('value', snapshot => {
@@ -16,10 +32,10 @@ export function fetchGroupUsers(groupId = 'default') {
   };
 };
 
-export function fetchUsers() {
+export function fetchUserPrivateData(userId) {
   return dispatch => {
-    database.ref('users').on('value', snapshot => {
-      dispatch({ type: 'FETCH_USERS_SUCCEEDED', payload: snapshot.val() });
+    database.ref('users/' + userId).on('value', snapshot => {
+      dispatch({ type: 'FETCH_USER_PRIVATE_DATA_SUCCEEDED', payload: snapshot.val() });
     });
   };
 };

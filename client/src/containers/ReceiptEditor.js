@@ -52,7 +52,7 @@ function getUserList(users) {
 
 const mapStateToProps = state => ({
   receipt: state.receiptForNewEntry,
-  users: getUserList(state.users),
+  users: getUserList(state.groupUsers),
   currentUser: state.currentUser
 });
 

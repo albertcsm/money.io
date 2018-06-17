@@ -1,12 +1,14 @@
 {
   "rules": {
     "users": {
-      ".read": "auth != null",
       "$userId": {
+        ".read": "$userId === auth.uid",
       	".write": "$userId === auth.uid",
-        ".validate": "newData.hasChild('name')",
-        "name": {
-          ".validate": "newData.isString()"
+        ".validate": "newData.hasChild('groups')",
+        "groups": {
+          "$groupId": {
+            ".validate": "root.child('groups').hasChild($groupId)"
+          }
         },
         "$other": { ".validate": false }
       }
@@ -17,7 +19,14 @@
         ".validate": "newData.hasChild('users')",
         "users": {
           ".validate": "newData.hasChildren()",
-          "$userId": {}
+          "$userId": {
+            ".write": "$userId === auth.uid",
+            ".validate": "newData.hasChild('name')",
+            "name": {
+              ".validate": "newData.isString()"
+            },
+            "$other": { ".validate": false }
+          }
         },
         "transactions": {
           "$transactionId": {
@@ -25,6 +34,9 @@
             ".validate": "newData.hasChild('participants') && newData.hasChild('time')",
             "time": {
               ".validate": "newData.isNumber() && newData.val() < (now + 600000)"
+            },
+            "type": {
+              ".validate": "newData.isString()"
             },
             "title": {
               ".validate": "newData.isString()"
@@ -38,6 +50,7 @@
             "$other": { ".validate": false }
     	    }
         },
+        "receipts": {},
         "$other": { ".validate": false }
       }
     },
