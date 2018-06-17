@@ -10,7 +10,7 @@ class ExistingReceiptEditor extends Component {
 
   componentWillMount() {
     const parentTransactionId = this.props.match.params.transactionId;
-    if (this.props.receipt.parent != parentTransactionId) {
+    if (this.props.receipt.parent !== parentTransactionId) {
       store.dispatch(Actions.initializeAmendmentForm(parentTransactionId));
     }
   }
