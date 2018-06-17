@@ -1,3 +1,5 @@
+import * as Actions from '../actions';
+
 const INITIAL_STATE = {
   authenticating: true,
   currentUser: null,
@@ -19,13 +21,13 @@ const INITIAL_STATE = {
 
 export default function rootReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case 'AUTHENTICATED':
+    case Actions.SET_AUTHENTICATED:
       return {
         ...state,
         authenticating: false,
         currentUser: action.payload
       };
-    case 'UNAUTHENTICATED':
+    case Actions.SET_UNAUTHENTICATED:
       return {
         ...state,
         authenticating: false,
@@ -35,60 +37,50 @@ export default function rootReducer(state = INITIAL_STATE, action) {
         groupTransactions: [],
         transactions: []
       };
-    case 'FETCH_GROUP_USERS_SUCCEEDED':
-      return {
-        ...state,
-        groupUsers: action.payload
-      };
-    case 'FETCH_USER_SUCCEEDED':
+    case Actions.FETCH_USER_PRIVATE_DATA_SUCCEEDED:
       return {
         ...state,
         userPrivateData: action.payload
       };
-    case 'FETCH_TRANSACTIONS_SUCCEEDED':
+    case Actions.FETCH_GROUP_MEMBERS_SUCCEEDED:
+      return {
+        ...state,
+        groupUsers: action.payload
+      };
+    case Actions.FETCH_TRANSACTIONS_SUCCEEDED:
       return {
         ...state,
         transactions: action.payload
       };
-    case 'INITIALIZE_RECEIPT':
+    case Actions.UPDATE_NEW_ENTRY_FORM:
       return {
         ...state,
         receiptForNewEntry: action.payload
       };
-    case 'INITIALIZE_AMENDMENT_FORM':
+    case Actions.UPDATE_AMENDMENT_FORM:
       return {
         ...state,
         receiptForExistingEntry: action.payload
       };
-    case 'PUBLISH_TRANSACTION_START':
+    case Actions.PUBLISH_TRANSACTION_START:
       return {
         ...state,
         publishingTransaction: true
       };
-    case 'PUBLISH_TRANSACTION_SUCCEEDED':
+    case Actions.PUBLISH_TRANSACTION_SUCCEEDED:
       return {
         ...state,
         publishingTransaction: false
       };
-    case 'SET_BUDDY_LIST_FILTER':
+    case Actions.SET_BUDDY_LIST_FILTER:
       return {
         ...state,
         buddyListFilter: action.payload
       };
-    case 'SET_RECEIPT_LIST_FILTER':
+    case Actions.SET_TRANSACTION_LIST_FILTER:
       return {
         ...state,
         receiptListFilter: action.payload
-      };
-    case 'SET_RECEIPT_FOR_NEW_ENTRY':
-      return {
-        ...state,
-        receiptForNewEntry: action.payload
-      };
-    case 'UPDATE_AMENDMENT_FORM':
-      return {
-        ...state,
-        receiptForExistingEntry: action.payload
       };
     default:
       return state;

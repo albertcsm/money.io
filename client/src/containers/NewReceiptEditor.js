@@ -10,12 +10,12 @@ class NewReceiptEditor extends Component {
 
   componentWillMount() {
     if (!this.props.receipt.transactionId) {
-      store.dispatch(Actions.initializeReceipt());
+      store.dispatch(Actions.initializeNewEntryForm());
     }
   }
 
   updateReceipt(receipt) {
-    store.dispatch(Actions.setReceiptForNewEntry(receipt));
+    store.dispatch(Actions.updateNewEntryForm(receipt));
   }
 
   publishReceipt(receipt) {

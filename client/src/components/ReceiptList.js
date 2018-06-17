@@ -9,8 +9,8 @@ import * as Actions from '../actions';
 
 class ReceiptList extends Component {
 
-  setReceiptListFilter(filter) {
-    store.dispatch(Actions.setReceiptListFilter(filter));
+  setTransactionListFilter(filter) {
+    store.dispatch(Actions.setTransactionListFilter(filter));
   }
 
   render() {
@@ -28,13 +28,13 @@ class ReceiptList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'PAID_BY_ME'} onClick={() => this.setReceiptListFilter('PAID_BY_ME')}>Paid by me</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'PAID_BY_ME'} onClick={() => this.setTransactionListFilter('PAID_BY_ME')}>Paid by me</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'INVOLVED'} onClick={() => this.setReceiptListFilter('INVOLVED')}>I was involved</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'INVOLVED'} onClick={() => this.setTransactionListFilter('INVOLVED')}>I was involved</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === 'ALL'} onClick={() => this.setReceiptListFilter('ALL')}>All</NavLink>
+              <NavLink href="#" active={this.props.receiptListFilter === 'ALL'} onClick={() => this.setTransactionListFilter('ALL')}>All</NavLink>
             </NavItem>
           </Nav>
         </div>
