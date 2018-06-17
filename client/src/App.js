@@ -10,7 +10,8 @@ import store from './store.js';
 import * as Actions from './actions'
 import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
-import ReceiptEditor from './containers/ReceiptEditor';
+import NewReceiptEditor from './containers/NewReceiptEditor';
+import ExistingReceiptEditor from './containers/ExistingReceiptEditor';
 import ReceiptList from './components/ReceiptList';
 import BuddyList from './components/BuddyList';
 import './App.css';
@@ -89,9 +90,10 @@ class App extends Component {
             <div className="MoneyIO-App-content">
               <div className="container">
                 <Switch>
-                  <Route path="/form" component={ReceiptEditor}/>
-                  <Route path="/receipts" component={ReceiptList}/>
-                  <Route path="/buddies" component={BuddyList}/>
+                  <Route exact path="/form" component={NewReceiptEditor}/>
+                  <Route exact path="/receipts" component={ReceiptList}/>
+                  <Route exact path="/receipts/:transactionId" component={ExistingReceiptEditor}/>
+                  <Route exact path="/buddies" component={BuddyList}/>
                   <Redirect from="/" to="/form" />
                 </Switch>
               </div>

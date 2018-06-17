@@ -61,6 +61,10 @@
   animation: MoneyIO-loading-spin 1s linear infinite;
 }
 
+.MoneyIO-table-row-as-link {
+  cursor: pointer;
+}
+
 @keyframes MoneyIO-loading-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

@@ -63,7 +63,29 @@ export function initializeReceipt() {
       ]
     }});
   }
-}
+};
+
+export function initializeAmendmentForm(transactionId, groupId = 'default') {
+  return dispatch => {
+    database.ref('/groups/' + groupId + '/transactions/' + transactionId).once('value').then(snapshot => {
+      const existingTransaction = snapshot.val();
+      const amendmentForm = { 
+        transactionId: database.ref().child('transactions').push().key,
+        parent: transactionId,
+        time: Date.now(),
+        restaurant: existingTransaction.title,
+        items: [
+          {
+            buddyUserId: '',
+            buddyUserName: '',
+            amount: null
+          }
+        ]
+      };
+      dispatch({ type: 'INITIALIZE_AMENDMENT_FORM', payload: amendmentForm });
+    });
+  }
+};
 
 export function publishTransaction(transaction, groupId = 'default') {
   return dispatch => {
@@ -88,4 +110,8 @@ export function setReceiptListFilter(filter) {
 
 export function setReceiptForNewEntry(receipt) {
   return { type: 'SET_RECEIPT_FOR_NEW_ENTRY', payload: receipt };
+}
+
+export function updateAmendmentForm(data) {
+  return { type: 'UPDATE_AMENDMENT_FORM', payload: data };
 }

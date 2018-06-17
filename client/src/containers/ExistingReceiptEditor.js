@@ -6,22 +6,24 @@ import store from '../store.js';
 import * as Actions from '../actions';
 import EntryForm from '../components/EntryForm'
 
-class ReceiptEditor extends Component {
+class ExistingReceiptEditor extends Component {
 
   componentWillMount() {
-    if (!this.props.receipt.transactionId) {
-      store.dispatch(Actions.initializeReceipt());
+    const parentTransactionId = this.props.match.params.transactionId;
+    if (this.props.receipt.parent != parentTransactionId) {
+      store.dispatch(Actions.initializeAmendmentForm(parentTransactionId));
     }
   }
 
-  updateReceipt(receipt) {
-    store.dispatch(Actions.setReceiptForNewEntry(receipt));
+  updateFormData(receipt) {
+    store.dispatch(Actions.updateAmendmentForm(receipt));
   }
 
-  publishReceipt(receipt) {
+  publishAmendment(receipt) {
     const transaction = {
       "id": receipt.transactionId,
       "time": receipt.time / 1000,
+      "parent": receipt.parent,
       "title": receipt.restaurant,
       "participants": {}
     };
@@ -40,7 +42,7 @@ class ReceiptEditor extends Component {
   render() {
     return (<EntryForm receipt={this.props.receipt}
       users={this.props.users}
-      onReceiptUpdate={(receipt) => this.updateReceipt(receipt)}
+      onReceiptUpdate={(receipt) => this.updateFormData(receipt)}
       onReceiptPublish={(receipt) => this.publishReceipt(receipt)}/>);
   }
 
@@ -51,9 +53,9 @@ function getUserList(users) {
 }
 
 const mapStateToProps = state => ({
-  receipt: state.receiptForNewEntry,
+  receipt: state.receiptForExistingEntry,
   users: getUserList(state.groupUsers),
   currentUser: state.currentUser
 });
 
-export default connect(mapStateToProps)(ReceiptEditor);
+export default connect(mapStateToProps)(ExistingReceiptEditor);

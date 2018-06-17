@@ -8,6 +8,10 @@ const INITIAL_STATE = {
     restaurant: '',
     items: []
   },
+  receiptForExistingEntry: {
+    restaurant: '',
+    items: []
+  },
   buddyListFilter: 'CLOSE_BUDDIES',
   receiptListFilter: 'PAID_BY_ME',
   publishingTransaction: false
@@ -50,7 +54,12 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         receiptForNewEntry: action.payload
-      }
+      };
+    case 'INITIALIZE_AMENDMENT_FORM':
+      return {
+        ...state,
+        receiptForExistingEntry: action.payload
+      };
     case 'PUBLISH_TRANSACTION_START':
       return {
         ...state,
@@ -75,6 +84,11 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         receiptForNewEntry: action.payload
+      };
+    case 'UPDATE_AMENDMENT_FORM':
+      return {
+        ...state,
+        receiptForExistingEntry: action.payload
       };
     default:
       return state;

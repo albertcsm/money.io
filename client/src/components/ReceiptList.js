@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
 
@@ -13,7 +15,7 @@ class ReceiptList extends Component {
 
   render() {
     let rows = this.props.receipts.map((receipt, index) => (
-      <tr key={index}>
+      <tr key={index} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/receipts/" + receipt.id)}>
         <td>{new Date(receipt.time * 1000).toLocaleString()}</td>
         <td>{receipt.restaurant}</td>
         <td>{receipt.participants.filter(p => p.paidAmount > 0).map(p => p.name).join(', ')}</td>
@@ -36,7 +38,7 @@ class ReceiptList extends Component {
             </NavItem>
           </Nav>
         </div>
-        <table className="table">
+        <table className="table table-hover">
           <thead className="thead-default">
             <tr>
               <th>Date</th>
