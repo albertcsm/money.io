@@ -32,6 +32,9 @@
           "$transactionId": {
             ".write": "data.parent().parent().child('users').hasChild(auth.uid) && !data.exists()",
             ".validate": "newData.hasChild('participants') && newData.hasChild('time')",
+            "parent": {
+              ".validate": "data.parent().hasChild(newData.child('parent').val())"
+            },
             "time": {
               ".validate": "newData.isNumber() && newData.val() < (now + 600000)"
             },
@@ -50,7 +53,6 @@
             "$other": { ".validate": false }
     	    }
         },
-        "receipts": {},
         "$other": { ".validate": false }
       }
     },
