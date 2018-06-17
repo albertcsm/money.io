@@ -56,6 +56,11 @@ class EntryFormItem extends Component {
     
     return (
       <div className="MoneyIO-entry-form-item">
+        <div className="pull-right">
+          <Button color="link" className="MoneyIO-entry-form-item-close-button" onClick={this.props.onRemove}>
+            <span className="fa fa-remove"/>
+          </Button>
+        </div>
         <div className="row">
           <div className="col-7">
             <div className="form-group">
@@ -72,18 +77,6 @@ class EntryFormItem extends Component {
                   onChange: (event, {newValue, method}) => this.selectBuddy(newValue)
                 }}                
               />
-            </div>
-          </div>
-          <div className="col-5 text-right">
-            <Button color="link" className="MoneyIO-entry-form-item-close-button" onClick={this.props.onRemove}>
-              <span className="fa fa-remove"/>
-            </Button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-7">
-            <div className="form-group">
-              <Input type="text" value={this.props.item.description} placeholder="What?" onChange={(event) => this.handleFieldUpdate('description', event.target.value)}/>
             </div>
           </div>
           <div className="col-5">
