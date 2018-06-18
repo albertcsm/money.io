@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 const getCurrentUserId = state => state.currentUser.uid;
 const getBuddies = state => state.buddies;
 const getTransactions = state => state.transactions;
+const getRawAmendmentForm = state => state.amendmentForm;
 
 export const getBuddyList = createSelector([getBuddies, getTransactions], (buddies, transactions) => {
   return Object.keys(buddies).map(id => ({
@@ -56,4 +57,14 @@ export const getCloseBuddyList = createSelector([getCurrentUserId, getMyTransact
       closeness: buddyScores[u.id] / myOwnScore
     }))
     .sort((a,b) => a.closeness < b.closeness);
+});
+
+export const getAmendmentForm = createSelector([getRawAmendmentForm, getBuddies], (rawAmendmentForm, buddies) => {
+  return {
+    ...rawAmendmentForm,
+    items: rawAmendmentForm.items.map(item => ({
+      ...item,
+      buddyUserName: buddies[item.buddyUserId] ? buddies[item.buddyUserId].name : item.buddyUserName
+    }))
+  }
 });

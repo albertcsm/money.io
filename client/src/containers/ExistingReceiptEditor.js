@@ -50,7 +50,7 @@ class ExistingReceiptEditor extends Component {
 }
 
 const mapStateToProps = state => ({
-  formData: state.amendmentForm,
+  formData: Selectors.getAmendmentForm(state),
   buddyList: Selectors.getBuddyList(state),
   currentUser: state.currentUser
 });

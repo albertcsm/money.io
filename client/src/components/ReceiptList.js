@@ -49,7 +49,7 @@ class ReceiptList extends Component {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Restaurant</th>
+              <th>Title</th>
               <th>Paid by</th>
               <th>Involved</th>
               <th>Total</th>

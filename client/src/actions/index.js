@@ -97,7 +97,7 @@ export function initializeAmendmentForm(transactionId, groupId = 'default') {
           .map(e => ({
             buddyUserId: e[0],
             buddyUserName: 'unknown',
-            amount: e[1]
+            amount: -e[1]
           }))
       };
       dispatch({ type: UPDATE_AMENDMENT_FORM, payload: amendmentForm });

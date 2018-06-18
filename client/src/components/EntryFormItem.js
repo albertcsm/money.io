@@ -79,7 +79,7 @@ class EntryFormItem extends Component {
             <div className="MoneyIO-entry-from-price-field">
               <InputGroup>
                 <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                <Input type="number" step="any" defaultValue={this.props.item.amount} placeholder="Price?" onChange={(event) => this.handleFieldUpdate('amount', event.target.value)}/>
+                <Input type="number" step="any" value={this.props.item.amount} placeholder="Price?" onChange={(event) => this.handleFieldUpdate('amount', event.target.value)}/>
               </InputGroup>
             </div>
           </div>
