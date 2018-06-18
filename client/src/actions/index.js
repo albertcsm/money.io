@@ -72,7 +72,7 @@ export function initializeNewEntryForm() {
         {
           buddyUserId: '',
           buddyUserName: '',
-          amount: null
+          amount: ''
         }
       ]
     }});

@@ -13,7 +13,7 @@ const TransactionFilter = {
   ALL: 'ALL',
 };
 
-class ReceiptList extends Component {
+class TransactionList extends Component {
 
   setTransactionListFilter(filter) {
     store.dispatch(Actions.setTransactionListFilter(filter));
@@ -21,11 +21,11 @@ class ReceiptList extends Component {
 
   render() {
     let filteredTransactionList;
-    if (this.props.receiptListFilter === TransactionFilter.PAID_BY_ME) {
+    if (this.props.transactionListFilter === TransactionFilter.PAID_BY_ME) {
       filteredTransactionList = this.props.myPaidTransactionList;
-    } else if (this.props.receiptListFilter === TransactionFilter.INVOLVED) {
+    } else if (this.props.transactionListFilter === TransactionFilter.INVOLVED) {
       filteredTransactionList = this.props.myTransactionList;
-    } else if (this.props.receiptListFilter === TransactionFilter.ALL) {
+    } else if (this.props.transactionListFilter === TransactionFilter.ALL) {
       filteredTransactionList = this.props.transactionList;
     } else {
       filteredTransactionList = [];
@@ -35,13 +35,13 @@ class ReceiptList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.PAID_BY_ME} onClick={() => this.setTransactionListFilter(TransactionFilter.PAID_BY_ME)}>Paid by me</NavLink>
+              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.PAID_BY_ME} onClick={() => this.setTransactionListFilter(TransactionFilter.PAID_BY_ME)}>Paid by me</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.INVOLVED} onClick={() => this.setTransactionListFilter(TransactionFilter.INVOLVED)}>I was involved</NavLink>
+              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.INVOLVED} onClick={() => this.setTransactionListFilter(TransactionFilter.INVOLVED)}>I was involved</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.receiptListFilter === TransactionFilter.ALL} onClick={() => this.setTransactionListFilter(TransactionFilter.ALL)}>All</NavLink>
+              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.ALL} onClick={() => this.setTransactionListFilter(TransactionFilter.ALL)}>All</NavLink>
             </NavItem>
           </Nav>
         </div>
@@ -57,7 +57,7 @@ class ReceiptList extends Component {
           </thead>
           <tbody>
             { filteredTransactionList.map(t => (
-              <tr key={t.id} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/receipts/" + t.id)}>
+              <tr key={t.id} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/transactions/" + t.id)}>
                 <td>{new Date(t.time).toLocaleString()}</td>
                 <td>{t.title}</td>
                 <td>
@@ -91,7 +91,7 @@ const mapStateToProps = state => ({
   myTransactionList: Selectors.getMyTransactionList(state),
   myPaidTransactionList: Selectors.getMyPaidTransactionList(state),
   buddies: state.buddies,
-  receiptListFilter: state.receiptListFilter
+  transactionListFilter: state.transactionListFilter
 });
 
-export default connect(mapStateToProps)(ReceiptList);
+export default connect(mapStateToProps)(TransactionList);

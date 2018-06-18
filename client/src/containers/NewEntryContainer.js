@@ -7,25 +7,23 @@ import * as Actions from '../actions';
 import * as Selectors from '../selectors';
 import EntryForm from '../components/EntryForm'
 
-class ExistingReceiptEditor extends Component {
+class NewEntryContainer extends Component {
 
   componentWillMount() {
-    const existingTransactionId = this.props.match.params.transactionId;
-    if (!this.props.formData.existingTransaction || this.props.formData.existingTransaction.id !== existingTransactionId) {
-      store.dispatch(Actions.initializeAmendmentForm(existingTransactionId));
+    if (!this.props.formData.transactionId) {
+      store.dispatch(Actions.initializeNewEntryForm());
     }
   }
 
   updateForm(formData) {
-    store.dispatch(Actions.updateAmendmentForm(formData));
+    store.dispatch(Actions.updateNewEntryForm(formData));
   }
 
-  publishAmendment(formData) {
+  publishTransaction(formData) {
     const transaction = {
       "id": formData.transactionId,
       "time": formData.time,
-      "parent": formData.parent,
-      "title": formData.restaurant,
+      "title": formData.title,
       "participants": {}
     };
     let total = 0;
@@ -43,16 +41,16 @@ class ExistingReceiptEditor extends Component {
   render() {
     return (<EntryForm formData={this.props.formData}
       buddyList={this.props.buddyList}
-      onUpdate={(formData) => this.updateForm(formData)}
-      onPublish={(formData) => this.publishAmendment(formData)}/>);
+      onUpdate={formData => this.updateForm(formData)}
+      onPublish={formData => this.publishTransaction(formData)}/>);
   }
 
 }
 
 const mapStateToProps = state => ({
-  formData: Selectors.getAmendmentForm(state),
+  formData: state.newEntryForm,
   buddyList: Selectors.getBuddyList(state),
   currentUser: state.currentUser
 });
 
-export default connect(mapStateToProps)(ExistingReceiptEditor);
+export default connect(mapStateToProps)(NewEntryContainer);

@@ -10,9 +10,9 @@ import store from './store.js';
 import * as Actions from './actions'
 import Loading from './components/Loading';
 import LoginForm from './components/LoginForm';
-import NewReceiptEditor from './containers/NewReceiptEditor';
-import ExistingReceiptEditor from './containers/ExistingReceiptEditor';
-import ReceiptList from './components/ReceiptList';
+import NewEntryContainer from './containers/NewEntryContainer';
+import AmendmentContainer from './containers/AmendmentContainer';
+import TransactionList from './components/TransactionList';
 import BuddyList from './components/BuddyList';
 import './App.css';
 
@@ -65,7 +65,7 @@ class App extends Component {
                     <NavLink tag={Link} to="/form">Form</NavLink>
                   </NavItem>
                   <NavItem>
-                    <NavLink tag={Link} to="/receipts">Receipts</NavLink>
+                    <NavLink tag={Link} to="/transactions">Transactions</NavLink>
                   </NavItem>
                   <NavItem>
                     <NavLink tag={Link} to="/buddies">Buddies</NavLink>
@@ -90,9 +90,9 @@ class App extends Component {
             <div className="MoneyIO-App-content">
               <div className="container">
                 <Switch>
-                  <Route exact path="/form" component={NewReceiptEditor}/>
-                  <Route exact path="/receipts" component={ReceiptList}/>
-                  <Route exact path="/receipts/:transactionId" component={ExistingReceiptEditor}/>
+                  <Route exact path="/form" component={NewEntryContainer}/>
+                  <Route exact path="/transactions" component={TransactionList}/>
+                  <Route exact path="/transactions/:transactionId" component={AmendmentContainer}/>
                   <Route exact path="/buddies" component={BuddyList}/>
                   <Redirect from="/" to="/form" />
                 </Switch>

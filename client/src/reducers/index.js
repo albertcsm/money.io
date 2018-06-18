@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     items: []
   },
   buddyListFilter: 'CLOSE_BUDDIES',
-  receiptListFilter: 'PAID_BY_ME',
+  transactionListFilter: 'PAID_BY_ME',
   publishingTransaction: false
 };
 
@@ -83,7 +83,7 @@ export default function rootReducer(state = INITIAL_STATE, action) {
     case Actions.SET_TRANSACTION_LIST_FILTER:
       return {
         ...state,
-        receiptListFilter: action.payload
+        transactionListFilter: action.payload
       };
     default:
       return state;
