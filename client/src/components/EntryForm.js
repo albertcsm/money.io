@@ -119,7 +119,7 @@ class EntryForm extends Component {
             <Label for="date" className="MoneyIO-form-label">Date</Label>
           </div>
           <div className="col-8">
-            <Input id="date" type="text" value={Moment(this.props.receipt.time).format('YYYY-MM-DD')} name="date" onChange={(event) => this.handleFieldUpdate('time', event.target.value)}/>
+            <Input id="date" type="text" readOnly value={Moment(this.props.receipt.time).format('YYYY-MM-DD')} name="date" onChange={(event) => this.handleFieldUpdate('time', event.target.value)}/>
           </div>
         </FormGroup>
       </Form>

@@ -43,7 +43,7 @@ class ReceiptList extends Component {
             </NavItem>
           </Nav>
         </div>
-        <table className="table table-hover">
+        <table className="table table-hover table-responsive-sm">
           <thead>
             <tr>
               <th>Date</th>
