@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import store from '../store.js';
 import * as Actions from '../actions';
+import * as Selectors from '../selectors';
 
 const TransactionFilter = {
   PAID_BY_ME: 'PAID_BY_ME',
@@ -19,15 +20,16 @@ class ReceiptList extends Component {
   }
 
   render() {
-    let rows = this.props.receipts.map((receipt, index) => (
-      <tr key={index} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/receipts/" + receipt.id)}>
-        <td>{new Date(receipt.time * 1000).toLocaleString()}</td>
-        <td>{receipt.restaurant}</td>
-        <td>{receipt.participants.filter(p => p.paidAmount > 0).map(p => p.name).join(', ')}</td>
-        <td>{receipt.participants.filter(p => p.paidAmount <= 0).map(p => p.name).join(', ')}</td>
-        <td>{receipt.participants.filter(p => p.paidAmount > 0).map(p => p.paidAmount).reduce((a,b)=>a+b)}</td>
-      </tr>
-    ));
+    let filteredTransactionList;
+    if (this.props.receiptListFilter === TransactionFilter.PAID_BY_ME) {
+      filteredTransactionList = this.props.myPaidTransactionList;
+    } else if (this.props.receiptListFilter === TransactionFilter.INVOLVED) {
+      filteredTransactionList = this.props.myTransactionList;
+    } else if (this.props.receiptListFilter === TransactionFilter.ALL) {
+      filteredTransactionList = this.props.transactionList;
+    } else {
+      filteredTransactionList = [];
+    }
     return (
       <div>
         <div className="MoneyIO-Nav-container">
@@ -54,7 +56,28 @@ class ReceiptList extends Component {
             </tr>
           </thead>
           <tbody>
-            {rows}
+            { filteredTransactionList.map(t => (
+              <tr key={t.id} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/receipts/" + t.id)}>
+                <td>{new Date(t.time).toLocaleString()}</td>
+                <td>{t.title}</td>
+                <td>
+                  {Object.entries(t.participants)
+                    .filter(e => e[1] > 0)
+                    .map(e => this.props.buddies[e[0]].name).join(', ')}
+                </td>
+                <td>
+                  {Object.entries(t.participants)
+                    .filter(e => e[1] <= 0)
+                    .map(e => this.props.buddies[e[0]].name).join(', ')}
+                </td>
+                <td>
+                  {Object.entries(t.participants)
+                    .filter(e => e[1] > 0)
+                    .map(e => e[1])
+                    .reduce((a, b) => a + b, 0)}
+                </td>
+              </tr>
+            )) }
           </tbody>
         </table>
       </div>
@@ -63,38 +86,11 @@ class ReceiptList extends Component {
 
 }
 
-function getReceiptList(transactions, users) {
-  return Object.keys(transactions)
-    .map(transactionId => ({ 
-      id: transactionId,
-      time: transactions[transactionId].time,
-      restaurant: transactions[transactionId].title,
-      participants: Object.keys(transactions[transactionId].participants)
-        .map(userId => ({
-          userId: userId,
-          name: (users[userId] ? users[userId].name : ''),
-          paidAmount: transactions[transactionId].participants[userId]
-        }))
-    }));
-}
-
-function getFilteredReceiptList(filter, originalReceiptList, transactions, currentUser) {
-  let filtered = [];
-  if (filter === 'PAID_BY_ME') {
-    filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid] > 0);
-  } else if (filter === 'INVOLVED') {
-    filtered = originalReceiptList.filter(r => transactions[r.id].participants[currentUser.uid])
-  } else {
-    filtered = originalReceiptList;
-  }
-  return filtered.sort((r1,r2) => r1.time < r2.time).slice(0, 50);
-}
-
 const mapStateToProps = state => ({
-  receipts : getFilteredReceiptList(state.receiptListFilter,
-    getReceiptList(state.transactions, state.groupUsers),
-    state.transactions,
-    state.currentUser),
+  transactionList: Selectors.getAggregatedTransactionList(state),
+  myTransactionList: Selectors.getMyTransactionList(state),
+  myPaidTransactionList: Selectors.getMyPaidTransactionList(state),
+  buddies: state.buddies,
   receiptListFilter: state.receiptListFilter
 });
 

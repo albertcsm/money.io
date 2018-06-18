@@ -4,31 +4,32 @@ import { connect } from 'react-redux';
 
 import store from '../store.js';
 import * as Actions from '../actions';
+import * as Selectors from '../selectors';
 import EntryForm from '../components/EntryForm'
 
 class ExistingReceiptEditor extends Component {
 
   componentWillMount() {
-    const parentTransactionId = this.props.match.params.transactionId;
-    if (this.props.receipt.parent !== parentTransactionId) {
-      store.dispatch(Actions.initializeAmendmentForm(parentTransactionId));
+    const existingTransactionId = this.props.match.params.transactionId;
+    if (!this.props.formData.existingTransaction || this.props.formData.existingTransaction.id !== existingTransactionId) {
+      store.dispatch(Actions.initializeAmendmentForm(existingTransactionId));
     }
   }
 
-  updateFormData(receipt) {
-    store.dispatch(Actions.updateAmendmentForm(receipt));
+  updateForm(formData) {
+    store.dispatch(Actions.updateAmendmentForm(formData));
   }
 
-  publishAmendment(receipt) {
+  publishAmendment(formData) {
     const transaction = {
-      "id": receipt.transactionId,
-      "time": receipt.time / 1000,
-      "parent": receipt.parent,
-      "title": receipt.restaurant,
+      "id": formData.transactionId,
+      "time": formData.time,
+      "parent": formData.parent,
+      "title": formData.restaurant,
       "participants": {}
     };
     let total = 0;
-    receipt.items.forEach(item => {
+    formData.items.forEach(item => {
       const amount = Number(item.amount);
       if (amount > 0) {
         transaction.participants[item.buddyUserId] = -amount;
@@ -40,21 +41,17 @@ class ExistingReceiptEditor extends Component {
   }
 
   render() {
-    return (<EntryForm receipt={this.props.receipt}
-      users={this.props.users}
-      onReceiptUpdate={(receipt) => this.updateFormData(receipt)}
-      onReceiptPublish={(receipt) => this.publishReceipt(receipt)}/>);
+    return (<EntryForm formData={this.props.formData}
+      buddyList={this.props.buddyList}
+      onUpdate={(formData) => this.updateForm(formData)}
+      onPublish={(formData) => this.publishAmendment(formData)}/>);
   }
 
 }
 
-function getUserList(users) {
-  return Object.keys(users).map(key => ({ ...users[key], id: key }));
-}
-
 const mapStateToProps = state => ({
-  receipt: state.receiptForExistingEntry,
-  users: getUserList(state.groupUsers),
+  formData: state.amendmentForm,
+  buddyList: Selectors.getBuddyList(state),
   currentUser: state.currentUser
 });
 

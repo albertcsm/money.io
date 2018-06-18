@@ -37,54 +37,48 @@ class EntryForm extends Component {
     this.state = initialState;
   }
 
-  publishReceipt() {
-    this.props.onReceiptPublish(this.props.receipt);
+  publish() {
+    this.props.onPublish(this.props.formData);
   }
 
   handleFieldUpdate(field, value) {
-    if (this.props.onReceiptUpdate) {
-      this.props.onReceiptUpdate({
-        ...this.props.receipt,
-        [field]: value
-      });
-    }
+    this.props.onUpdate({
+      ...this.props.formData,
+      [field]: value
+    });
   }
 
   addNewEntryItem() {
-    if (this.props.onReceiptUpdate) {
-      const newItem = {
-        'buddyUserName': '',
-        'buddyUserId': null
-      };
-      this.props.onReceiptUpdate({
-        ...this.props.receipt,
-        items: [ ...this.props.receipt.items, newItem ]
-      });
-    }
+    const newItem = {
+      'buddyUserName': '',
+      'buddyUserId': null
+    };
+
+    this.props.onUpdate({
+      ...this.props.formData,
+      items: [ ...this.props.formData.items, newItem ]
+    });
   }
 
   handleItemUpdate(i, item) {
-    const items = this.props.receipt.items;
+    const items = this.props.formData.items;
     items[i] = item;
-    if (this.props.onReceiptUpdate) {
-      this.props.onReceiptUpdate({
-        ...this.props.receipt,
-        items: items
-      });
-    }
+
+    this.props.onUpdate({
+      ...this.props.formData,
+      items: items
+    });
   }
 
   removeEntryItem(i) {
-    if (this.props.receipt.items.length > 1) {
-      const items = this.props.receipt.items.slice();
+    if (this.props.formData.items.length > 1) {
+      const items = this.props.formData.items.slice();
       items.splice(i, 1);
 
-      if (this.props.onReceiptUpdate) {
-        this.props.onReceiptUpdate({
-          ...this.props.receipt,
-          items: items
-        });
-      }
+      this.props.onUpdate({
+        ...this.props.formData,
+        items: items
+      });
     }
   }
 
@@ -108,10 +102,10 @@ class EntryForm extends Component {
       <Form>
         <FormGroup row>
           <div className="col-4">
-            <Label for="restaurant" className="MoneyIO-form-label">Restaurant</Label>
+            <Label for="title" className="MoneyIO-form-label">Title</Label>
           </div>
           <div className="col-8">
-            <Input id="restaurant" type="text" value={this.props.receipt.restaurant} name="restaurant" onChange={(event) => this.handleFieldUpdate('restaurant', event.target.value)}/>
+            <Input id="title" type="text" value={this.props.formData.title} name="title" onChange={(event) => this.handleFieldUpdate('title', event.target.value)}/>
           </div>
         </FormGroup>
         <FormGroup row>
@@ -119,7 +113,7 @@ class EntryForm extends Component {
             <Label for="date" className="MoneyIO-form-label">Date</Label>
           </div>
           <div className="col-8">
-            <Input id="date" type="text" readOnly value={Moment(this.props.receipt.time).format('YYYY-MM-DD')} name="date" onChange={(event) => this.handleFieldUpdate('time', event.target.value)}/>
+            <Input id="date" type="text" readOnly value={Moment(this.props.formData.time).format('YYYY-MM-DD')} name="date"/>
           </div>
         </FormGroup>
       </Form>
@@ -169,7 +163,7 @@ class EntryForm extends Component {
   }
 
   renderSummary() {
-    let total = this.props.receipt.items
+    let total = this.props.formData.items
       .map(item => item.amount || 0)
       .reduce((x1, x2) => Number(x1) + Number(x2), 0);
     this.state.adjustments.forEach(adjustment => {
@@ -217,8 +211,8 @@ class EntryForm extends Component {
         <div className="card-body">
           {this.renderBasicInfo()}
 
-          {this.props.receipt.items.map((item, i) => (
-            <EntryFormItem key={i} item={item} users={this.props.users}
+          {this.props.formData.items.map((item, i) => (
+            <EntryFormItem key={i} item={item} buddyList={this.props.buddyList}
               onItemUpdate={(item) => this.handleItemUpdate(i, item)}
               onRemove={() => this.removeEntryItem(i)}/>
           ))}
@@ -232,7 +226,7 @@ class EntryForm extends Component {
           {this.renderBillAdjustments()}
           {this.renderSummary()}
           <div className="text-right">
-            <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publishReceipt()}>Publish</Button>
+            <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publish()}>Publish</Button>
           </div>
         </div>
       </div>

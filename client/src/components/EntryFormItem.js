@@ -11,30 +11,27 @@ class EntryFormItem extends Component {
   }
 
   handleFieldUpdate(field, value) {
-    if (this.props.onItemUpdate) {
-      this.props.onItemUpdate({
-        ...this.props.item,
-        [field]: value
-      });
-    }
+    this.props.onItemUpdate({
+      ...this.props.item,
+      [field]: value
+    });
   }
 
   selectBuddy(userName) {
-    const user = this.props.users.find(u => u.name === userName);
+    const user = this.props.buddyList.find(u => u.name === userName);
     const userId = user ? user.id : null;
-    if (this.props.onItemUpdate) {
-      this.props.onItemUpdate({
-        ...this.props.item,
-        buddyUserId: userId,
-        buddyUserName: userName
-      });
-    }
+
+    this.props.onItemUpdate({
+      ...this.props.item,
+      buddyUserId: userId,
+      buddyUserName: userName
+    });
   }
 
   render() {
     const getSuggestions = value => {
       const inputValue = value.trim().toLowerCase();
-      return this.props.users.filter(user =>
+      return this.props.buddyList.filter(user =>
         user.name.toLowerCase() !== inputValue && user.name.toLowerCase().indexOf(inputValue) !== -1
       );
     };    
@@ -48,7 +45,7 @@ class EntryFormItem extends Component {
       input: 'form-control',
       suggestionsContainer: 'dropdown',
       suggestionsContainerOpen: 'show',
-      suggestionsList: 'dropdown-menu',
+      suggestionsList: 'dropdown-menu show',
       suggestion: 'dropdown-item',
       suggestionFocused: 'active'
     };

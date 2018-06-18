@@ -3,8 +3,9 @@ import { database } from '../firebaseApp.js';
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
 export const SET_UNAUTHENTICATED = 'SET_UNAUTHENTICATED';
 export const FETCH_USER_PRIVATE_DATA_SUCCEEDED = 'FETCH_USER_PRIVATE_DATA_SUCCEEDED';
-export const FETCH_GROUP_MEMBERS_SUCCEEDED = 'FETCH_GROUP_MEMBERS_SUCCEEDED';
+export const FETCH_BUDDIES_SUCCEEDED = 'FETCH_GROUP_MEMBERS_SUCCEEDED';
 export const FETCH_TRANSACTIONS_SUCCEEDED = 'FETCH_TRANSACTIONS_SUCCEEDED';
+export const FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED = 'FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED';
 export const UPDATE_NEW_ENTRY_FORM = 'UPDATE_NEW_ENTRY_FORM';
 export const UPDATE_AMENDMENT_FORM = 'UPDATE_AMENDMENT_FORM';
 export const PUBLISH_TRANSACTION_START = 'PUBLISH_TRANSACTION_START';
@@ -29,17 +30,18 @@ export function initializeForUser(user) {
       const groupIds = Object.keys(privateUserData.groups);
       if (groupIds.length > 0) {
         const defaultGroup = groupIds[0];
-        dispatch(fetchGroupMembers(defaultGroup));
+        dispatch(fetchBuddies(defaultGroup));
         dispatch(fetchTransactions(defaultGroup));
+        dispatch(fetchTransactionAmendments(defaultGroup));
       }
     });
   };
 };
 
-export function fetchGroupMembers(groupId = 'default') {
+export function fetchBuddies(groupId = 'default') {
   return dispatch => {
     database.ref('groups/' + groupId + '/users').on('value', snapshot => {
-      dispatch({ type: FETCH_GROUP_MEMBERS_SUCCEEDED, payload: snapshot.val() });
+      dispatch({ type: FETCH_BUDDIES_SUCCEEDED, payload: snapshot.val() });
     });
   };
 };
@@ -52,12 +54,20 @@ export function fetchTransactions(groupId = 'default') {
   };
 };
 
+export function fetchTransactionAmendments(groupId = 'default') {
+  return dispatch => {
+    database.ref('groups/' + groupId + '/transactionAmendments').on('value', snapshot => {
+      dispatch({ type: FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED, payload: snapshot.val() });
+    });
+  };
+};
+
 export function initializeNewEntryForm() {
   return dispatch => {
     dispatch({ type: UPDATE_NEW_ENTRY_FORM, payload: { 
       transactionId: database.ref().child('transactions').push().key,
       time: Date.now(),
-      restaurant: '',
+      title: '',
       items: [
         {
           buddyUserId: '',
@@ -79,16 +89,16 @@ export function initializeAmendmentForm(transactionId, groupId = 'default') {
       const existingTransaction = snapshot.val();
       const amendmentForm = { 
         transactionId: database.ref().child('transactions').push().key,
-        parent: transactionId,
-        time: Date.now(),
-        restaurant: existingTransaction.title,
-        items: [
-          {
-            buddyUserId: '',
-            buddyUserName: '',
-            amount: null
-          }
-        ]
+        existingTransaction,
+        time: existingTransaction.time,
+        title: existingTransaction.title,
+        items: Object.entries(existingTransaction.participants)
+          .filter(e => e[1] < 0)
+          .map(e => ({
+            buddyUserId: e[0],
+            buddyUserName: 'unknown',
+            amount: e[1]
+          }))
       };
       dispatch({ type: UPDATE_AMENDMENT_FORM, payload: amendmentForm });
     });

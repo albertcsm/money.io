@@ -4,14 +4,17 @@ const INITIAL_STATE = {
   authenticating: true,
   currentUser: null,
   userPrivateData: {},
-  groupUsers: [],
-  transactions: [],
-  receiptForNewEntry: {
-    restaurant: '',
+  buddies: {},
+  transactions: {},
+  transactionAmendments: {},
+  buddyList: [],
+  transactionList: [],
+  newEntryForm: {
+    title: '',
     items: []
   },
-  receiptForExistingEntry: {
-    restaurant: '',
+  amendmentForm: {
+    title: '',
     items: []
   },
   buddyListFilter: 'CLOSE_BUDDIES',
@@ -29,38 +32,38 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       };
     case Actions.SET_UNAUTHENTICATED:
       return {
-        ...state,
-        authenticating: false,
-        currentUser: action.payload,
-        groupUsers: [],
-        users: [],
-        groupTransactions: [],
-        transactions: []
+        ...INITIAL_STATE,
+        authenticating: false
       };
     case Actions.FETCH_USER_PRIVATE_DATA_SUCCEEDED:
       return {
         ...state,
         userPrivateData: action.payload
       };
-    case Actions.FETCH_GROUP_MEMBERS_SUCCEEDED:
+    case Actions.FETCH_BUDDIES_SUCCEEDED:
       return {
         ...state,
-        groupUsers: action.payload
+        buddies: action.payload
       };
     case Actions.FETCH_TRANSACTIONS_SUCCEEDED:
       return {
         ...state,
         transactions: action.payload
       };
+    case Actions.FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED:
+      return {
+        ...state,
+        transactionAmendments: action.payload
+      };
     case Actions.UPDATE_NEW_ENTRY_FORM:
       return {
         ...state,
-        receiptForNewEntry: action.payload
+        newEntryForm: action.payload
       };
     case Actions.UPDATE_AMENDMENT_FORM:
       return {
         ...state,
-        receiptForExistingEntry: action.payload
+        amendmentForm: action.payload
       };
     case Actions.PUBLISH_TRANSACTION_START:
       return {

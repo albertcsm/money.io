@@ -4,29 +4,30 @@ import { connect } from 'react-redux';
 
 import store from '../store.js';
 import * as Actions from '../actions';
+import * as Selectors from '../selectors';
 import EntryForm from '../components/EntryForm'
 
 class NewReceiptEditor extends Component {
 
   componentWillMount() {
-    if (!this.props.receipt.transactionId) {
+    if (!this.props.formData.transactionId) {
       store.dispatch(Actions.initializeNewEntryForm());
     }
   }
 
-  updateReceipt(receipt) {
-    store.dispatch(Actions.updateNewEntryForm(receipt));
+  updateForm(formData) {
+    store.dispatch(Actions.updateNewEntryForm(formData));
   }
 
-  publishReceipt(receipt) {
+  publishTransaction(formData) {
     const transaction = {
-      "id": receipt.transactionId,
-      "time": receipt.time / 1000,
-      "title": receipt.restaurant,
+      "id": formData.transactionId,
+      "time": formData.time,
+      "title": formData.title,
       "participants": {}
     };
     let total = 0;
-    receipt.items.forEach(item => {
+    formData.items.forEach(item => {
       const amount = Number(item.amount);
       if (amount > 0) {
         transaction.participants[item.buddyUserId] = -amount;
@@ -38,23 +39,18 @@ class NewReceiptEditor extends Component {
   }
 
   render() {
-    return (<EntryForm receipt={this.props.receipt}
-      users={this.props.users}
-      onReceiptUpdate={(receipt) => this.updateReceipt(receipt)}
-      onReceiptPublish={(receipt) => this.publishReceipt(receipt)}/>);
+    return (<EntryForm formData={this.props.formData}
+      buddyList={this.props.buddyList}
+      onUpdate={formData => this.updateForm(formData)}
+      onPublish={formData => this.publishTransaction(formData)}/>);
   }
 
 }
 
-function getUserList(users) {
-  return Object.keys(users).map(key => ({ ...users[key], id: key }));
-}
-
 const mapStateToProps = state => ({
-  receipt: state.receiptForNewEntry,
-  users: getUserList(state.groupUsers),
-  currentUser: state.currentUser,
-  transactions: state.transactions,
+  formData: state.newEntryForm,
+  buddyList: Selectors.getBuddyList(state),
+  currentUser: state.currentUser
 });
 
 export default connect(mapStateToProps)(NewReceiptEditor);

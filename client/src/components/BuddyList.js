@@ -4,7 +4,8 @@ import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux'
 
 import store from '../store.js';
-import * as Actions from '../actions'
+import * as Actions from '../actions';
+import * as Selectors from '../selectors';
 
 const BuddyFilter = {
   CLOSE_BUDDIES: 'CLOSE_BUDDIES',
@@ -19,6 +20,14 @@ class BuddyList extends Component {
   }
 
   render() {
+    let filteredAndSortedBuddyList;
+    if (this.props.buddyListFilter === BuddyFilter.CLOSE_BUDDIES) {
+      filteredAndSortedBuddyList = this.props.closeBuddyList.slice(0, 10);
+    } else if (this.props.buddyListFilter === BuddyFilter.TOP_DEBTORS) {
+      filteredAndSortedBuddyList = this.props.buddyList.sort((a,b) => a.balance > b.balance).slice(0, 10);
+    } else if (this.props.buddyListFilter === BuddyFilter.TOP_CREDITORS) {
+      filteredAndSortedBuddyList = this.props.buddyList.sort((a,b) => a.balance < b.balance).slice(0, 10);
+    }
     return (
       <div>
         <div className="MoneyIO-Nav-container">
@@ -38,13 +47,15 @@ class BuddyList extends Component {
           <thead>
             <tr>
               <th>Name</th>
+              { this.props.buddyListFilter === BuddyFilter.CLOSE_BUDDIES && <th>Closeness</th> }
               <th>Balance</th>
             </tr>
           </thead>
           <tbody>
-            {this.props.buddies.map(buddy =>
+            {filteredAndSortedBuddyList.map(buddy =>
               <tr key={buddy.id}>
                 <td>{buddy.name}</td>
+                { this.props.buddyListFilter === BuddyFilter.CLOSE_BUDDIES && <td>{buddy.closeness}</td> }
                 <td>{buddy.balance}</td>
               </tr>
             )}
@@ -56,40 +67,9 @@ class BuddyList extends Component {
 
 }
 
-function getBuddyList(groupUsers, transactions) {
-  return Object.keys(groupUsers)
-    .map(userId => ({
-      id: userId,
-      ...groupUsers[userId],
-      balance: Object.values(transactions)
-        .map(t => t.participants[userId] ? t.participants[userId] : 0)
-        .reduce((a,b) => a+b, 0)
-    }));
-}
-
-function getFilteredBuddyList(filter, originalBuddyList, transactions, currentUser) {
-  if (filter === BuddyFilter.CLOSE_BUDDIES) {
-    const myTransactions = Object.keys(transactions)
-      .map(transactionId => transactions[transactionId])
-      .filter(transaction => transaction.participants[currentUser.uid]);
-    
-    const closeBuddies = new Set(myTransactions.flatMap(transaction => Object.keys(transaction.participants)));
-
-    return originalBuddyList.filter(buddy => closeBuddies.has(buddy.id));
-  } else if (filter === BuddyFilter.TOP_DEBTORS) {
-    return originalBuddyList.sort((a,b) => a.balance > b.balance).slice(0, 10);
-  } else if (filter === BuddyFilter.TOP_CREDITORS) {
-    return originalBuddyList.sort((a,b) => a.balance < b.balance).slice(0, 10);
-  } else {
-    return [];
-  }
-}
-
 const mapStateToProps = state => ({
-  buddies: getFilteredBuddyList(state.buddyListFilter,
-    getBuddyList(state.groupUsers, state.transactions),
-    state.transactions,
-    state.currentUser),
+  buddyList: Selectors.getBuddyList(state),
+  closeBuddyList: Selectors.getCloseBuddyList(state),
   buddyListFilter: state.buddyListFilter
 })
 
