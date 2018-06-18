@@ -54,11 +54,11 @@ class App extends Component {
       <HashRouter>
         { this.props.currentUser ?
           <div className="MoneyIO-App">
-            <Navbar color="primary" dark expand>
-              <NavbarToggler onClick={this.toggleNav} />
+            <Navbar color="primary" dark expand="sm">
               <NavbarBrand href="/">
                 <span className="fa fa-credit-card"/> <span id="MoneyIO-App-Title">money.io</span>
               </NavbarBrand>
+              <NavbarToggler onClick={this.toggleNav} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
                   <NavItem>
