@@ -102,18 +102,10 @@ class EntryForm extends Component {
       <Form>
         <FormGroup row>
           <div className="col-4">
-            <Label for="title" className="MoneyIO-form-label">Title</Label>
+            <Label for="title" className="MoneyIO-form-label">Restaurant</Label>
           </div>
           <div className="col-8">
             <Input id="title" type="text" value={this.props.formData.title} name="title" onChange={(event) => this.handleFieldUpdate('title', event.target.value)}/>
-          </div>
-        </FormGroup>
-        <FormGroup row>
-          <div className="col-4">
-            <Label for="date" className="MoneyIO-form-label">Date</Label>
-          </div>
-          <div className="col-8">
-            <Input id="date" type="text" readOnly value={Moment(this.props.formData.time).format('YYYY-MM-DD')} name="date"/>
           </div>
         </FormGroup>
       </Form>
@@ -209,6 +201,13 @@ class EntryForm extends Component {
     return (
       <div className="card">
         <div className="card-body">
+          <div className="mb-4 text-center">
+            <div className="float-right">
+              <label>{Moment(this.props.formData.time).format('YYYY-MM-DD')}</label>
+            </div>
+            <h5>Restaurant bill</h5>
+          </div>
+
           {this.renderBasicInfo()}
 
           {this.props.formData.items.map((item, i) => (
