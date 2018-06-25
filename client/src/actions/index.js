@@ -5,7 +5,6 @@ export const SET_UNAUTHENTICATED = 'SET_UNAUTHENTICATED';
 export const FETCH_USER_PRIVATE_DATA_SUCCEEDED = 'FETCH_USER_PRIVATE_DATA_SUCCEEDED';
 export const FETCH_BUDDIES_SUCCEEDED = 'FETCH_GROUP_MEMBERS_SUCCEEDED';
 export const FETCH_TRANSACTIONS_SUCCEEDED = 'FETCH_TRANSACTIONS_SUCCEEDED';
-export const FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED = 'FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED';
 export const UPDATE_NEW_ENTRY_FORM = 'UPDATE_NEW_ENTRY_FORM';
 export const UPDATE_AMENDMENT_FORM = 'UPDATE_AMENDMENT_FORM';
 export const PUBLISH_TRANSACTION_START = 'PUBLISH_TRANSACTION_START';
@@ -32,7 +31,6 @@ export function initializeForUser(user) {
         const defaultGroup = groupIds[0];
         dispatch(fetchBuddies(defaultGroup));
         dispatch(fetchTransactions(defaultGroup));
-        dispatch(fetchTransactionAmendments(defaultGroup));
       }
     });
   };
@@ -50,14 +48,6 @@ export function fetchTransactions(groupId = 'default') {
   return dispatch => {
     database.ref('groups/' + groupId + '/transactions').on('value', snapshot => {
       dispatch({ type: FETCH_TRANSACTIONS_SUCCEEDED, payload: snapshot.val() });
-    });
-  };
-};
-
-export function fetchTransactionAmendments(groupId = 'default') {
-  return dispatch => {
-    database.ref('groups/' + groupId + '/transactionAmendments').on('value', snapshot => {
-      dispatch({ type: FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED, payload: snapshot.val() });
     });
   };
 };

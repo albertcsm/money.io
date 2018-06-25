@@ -25,11 +25,53 @@ export const getRawTransactionList = createSelector([getTransactions], transacti
     .sort((a,b) => a.time < b.time);
 });
 
-export const getAggregatedTransactionList = createSelector([getRawTransactionList], (transactionList) => {
-  return transactionList.map(t => ({
-    ...t,
-    summarizedTransactions: []
-  }));
+export const getAggregatedTransactionList = createSelector([getTransactions], (transactions) => {
+  const transactionMap = {};
+  Object.entries(transactions).forEach(entry => {
+    transactionMap[entry[0]] = { ...entry[1], id: entry[0] };
+  });
+
+  const amendedTransactions = {};
+  Object.keys(transactionMap).forEach(id => {
+    if (transactionMap[id].amendmentOn) {
+      const amendedTransactionId = transactionMap[id].amendmentOn;
+      transactionMap[id].amendmentTransaction = transactionMap[amendedTransactionId];
+      amendedTransactions[amendedTransactionId] = true;
+    }
+  });
+
+  const getAggregatedTransaction = (transaction) => {
+    const amendmentChain = [];
+    for (let t = transaction; !!t; t = t.amendmentTransaction) {
+      amendmentChain.push(t);
+    }
+    
+    return {
+      ...transaction,
+      amendmentChain: amendmentChain,
+      participants: amendmentChain.reduce((map, amendment) => {
+        Object.keys(amendment.participants).forEach(userId => {
+          if (!map.hasOwnProperty(userId)) {
+            map[userId] = 0;
+          }
+          map[userId] += amendment.participants[userId];
+        });
+        return map;
+      }, {})
+    };
+  };
+
+  return Object.keys(transactionMap)
+    .filter(id => !amendedTransactions[id])
+    .map(id => transactionMap[id])
+    .map(transaction => {
+      if (transaction.amendmentOn) {
+        return getAggregatedTransaction(transaction);
+      } else {
+        return transaction;
+      }
+    })
+    .sort((a,b) => a.time < b.time);
 });
 
 export const getMyTransactionList = createSelector([getCurrentUserId, getAggregatedTransactionList], (currentUserId, aggregatedTransactionList) => {

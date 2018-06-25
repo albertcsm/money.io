@@ -6,7 +6,6 @@ const INITIAL_STATE = {
   userPrivateData: {},
   buddies: {},
   transactions: {},
-  transactionAmendments: {},
   buddyList: [],
   transactionList: [],
   newEntryForm: {
@@ -49,11 +48,6 @@ export default function rootReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         transactions: action.payload
-      };
-    case Actions.FETCH_TRANSACTION_AMENDMENTS_SUCCEEDED:
-      return {
-        ...state,
-        transactionAmendments: action.payload
       };
     case Actions.UPDATE_NEW_ENTRY_FORM:
       return {

@@ -47,13 +47,11 @@
                 ".validate": "newData.parent().parent().parent().parent().child('users').hasChild($userId)"
               }
             },
+            "amendmentOn": {
+              ".validate": "data.parent().hasChild(newData.val())"
+            },
             "$other": { ".validate": false }
     	    }
-        },
-        "transactionAmendments": {
-          "$originalTransactionId": {
-            ".validate": "data.parent().parent().child('transactions').hasChild($originalTransactionId)"
-          }
         },
         "$other": { ".validate": false }
       }

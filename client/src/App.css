@@ -65,8 +65,8 @@
   cursor: pointer;
 }
 
-tr.MoneyIO-table-row-no-hover > td {
-  background-color: white;
+tr.MoneyIO-table-row-indent > td {
+  padding-left: 1.5rem;
 }
 
 @keyframes MoneyIO-loading-spin {
