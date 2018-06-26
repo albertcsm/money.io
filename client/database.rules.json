@@ -48,7 +48,7 @@
               }
             },
             "amendmentOn": {
-              ".validate": "data.parent().hasChild(newData.val())"
+              ".validate": "data.parent().parent().hasChild(newData.val())"
             },
             "$other": { ".validate": false }
     	    }
