@@ -23,10 +23,11 @@ class AmendmentContainer extends Component {
   publishAmendment(formData) {
     const transaction = {
       "id": formData.transactionId,
+      "type": formData.type,
       "time": formData.time,
-      "parent": formData.parent,
-      "title": formData.restaurant,
-      "participants": {}
+      "title": formData.title,
+      "participants": {},
+      "amendmentOn": formData.existingTransaction.transactionId
     };
     let total = 0;
     formData.items.forEach(item => {

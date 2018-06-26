@@ -1,3 +1,5 @@
+import firebase from 'firebase/app';
+
 import { database } from '../firebaseApp.js';
 
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
@@ -76,11 +78,12 @@ export function updateNewEntryForm(formData) {
 export function initializeAmendmentForm(transactionId, groupId = 'default') {
   return dispatch => {
     database.ref('/groups/' + groupId + '/transactions/' + transactionId).once('value').then(snapshot => {
-      const existingTransaction = snapshot.val();
+      const existingTransaction = { ...snapshot.val(), transactionId: transactionId };
       const amendmentForm = { 
         transactionId: database.ref().child('transactions').push().key,
         existingTransaction,
         time: existingTransaction.time,
+        type: existingTransaction.type,
         title: existingTransaction.title,
         items: Object.entries(existingTransaction.participants)
           .filter(e => e[1] < 0)
@@ -103,7 +106,7 @@ export function publishTransaction(transaction, groupId = 'default') {
   return dispatch => {
     dispatch({ type: PUBLISH_TRANSACTION_START, payload: null });
 
-    var transactionWithoutId = { ...transaction };
+    var transactionWithoutId = { ...transaction, time: firebase.database.ServerValue.TIMESTAMP };
     delete transactionWithoutId.id;
 
     database.ref('/groups/' + groupId + '/transactions/' + transaction.id).set(transactionWithoutId).then(() => {
