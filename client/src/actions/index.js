@@ -58,7 +58,7 @@ export function initializeNewEntryForm() {
   return dispatch => {
     dispatch({ type: UPDATE_NEW_ENTRY_FORM, payload: { 
       transactionId: database.ref().child('transactions').push().key,
-      time: Date.now(),
+      time: null,
       title: '',
       items: [
         {

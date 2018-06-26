@@ -35,6 +35,7 @@ class EntryForm extends Component {
       ]
     };
     this.state = initialState;
+    Moment.locale('en');
   }
 
   publish() {
@@ -97,7 +98,6 @@ class EntryForm extends Component {
   }
 
   renderBasicInfo() {
-    Moment.locale('en');
     return (
       <Form>
         <FormGroup row>
@@ -202,9 +202,11 @@ class EntryForm extends Component {
       <div className="card">
         <div className="card-body">
           <div className="mb-4 text-center">
-            <div className="float-right">
-              <label>{Moment(this.props.formData.time).format('YYYY-MM-DD')}</label>
-            </div>
+            { this.props.formData.time &&
+              <div className="float-right">
+                <label>{Moment(this.props.formData.time).format('YYYY-MM-DD')}</label>
+              </div>
+            }
             <h5>Restaurant bill</h5>
           </div>
 
