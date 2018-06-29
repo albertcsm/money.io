@@ -202,11 +202,6 @@ class EntryForm extends Component {
       <div className="card">
         <div className="card-body">
           <div className="mb-4 text-center">
-            { this.props.formData.time &&
-              <div className="float-right">
-                <label>{Moment(this.props.formData.time).format('YYYY-MM-DD')}</label>
-              </div>
-            }
             <h5>Restaurant bill</h5>
           </div>
 
@@ -226,8 +221,17 @@ class EntryForm extends Component {
         
           {this.renderBillAdjustments()}
           {this.renderSummary()}
-          <div className="text-right">
-            <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publish()}>Publish</Button>
+          <div className="clearfix">
+            { this.props.formData.time &&
+                <div className="float-left">
+                  <label className="font-weight-light">
+                    Published on {Moment(this.props.formData.time).format('YYYY-MM-DD h:mm a')}
+                  </label>
+                </div>
+              }
+            <div className="text-right">
+              <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publish()}>Publish</Button>
+            </div>
           </div>
         </div>
       </div>

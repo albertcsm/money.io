@@ -47,6 +47,9 @@
                 ".validate": "newData.parent().parent().parent().parent().child('users').hasChild($userId)"
               }
             },
+            "enteredBy": {
+              ".validate": "newData.val() == auth.uid"
+            },
             "amendmentOn": {
               ".validate": "data.parent().parent().hasChild(newData.val())"
             },

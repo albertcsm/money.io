@@ -51,19 +51,16 @@ export const getAggregatedTransactionList = createSelector([getTransactions], (t
       amendmentChain: amendmentChain,
       participants: amendmentChain.reduce((map, amendment) => {
         Object.keys(amendment.participants).forEach(userId => {
-          if (!map.hasOwnProperty(userId)) {
-            map[userId] = 0;
-          }
-          map[userId] += amendment.participants[userId];
+          const originalValue = map[userId] || 0;
+          map[userId] = originalValue + amendment.participants[userId];
         });
         return map;
       }, {})
     };
   };
 
-  return Object.keys(transactionMap)
-    .filter(id => !amendedTransactions[id])
-    .map(id => transactionMap[id])
+  return Object.values(transactionMap)
+    .filter(transaction => !amendedTransactions[transaction.id])
     .map(transaction => {
       if (transaction.amendmentOn) {
         return getAggregatedTransaction(transaction);
@@ -78,8 +75,8 @@ export const getMyTransactionList = createSelector([getCurrentUserId, getAggrega
   return aggregatedTransactionList.filter(t => t.participants.hasOwnProperty(currentUserId));
 });
 
-export const getMyPaidTransactionList = createSelector([getCurrentUserId, getMyTransactionList], (currentUserId, myTransactionList) => {
-  return myTransactionList.filter(t => t.participants[currentUserId] > 0);
+export const getMyEnteredTransactionList = createSelector([getCurrentUserId, getMyTransactionList], (currentUserId, myTransactionList) => {
+  return myTransactionList.filter(t => t.enteredBy === currentUserId);
 });
 
 export const getCloseBuddyList = createSelector([getCurrentUserId, getMyTransactionList, getBuddyList], (currentUserId, myTransactionList, buddyList) => {

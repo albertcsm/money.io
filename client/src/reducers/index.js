@@ -17,7 +17,7 @@ const INITIAL_STATE = {
     items: []
   },
   buddyListFilter: 'CLOSE_BUDDIES',
-  transactionListFilter: 'PAID_BY_ME',
+  transactionListFilter: 'MY_TRANSACTIONS',
   publishingTransaction: false
 };
 

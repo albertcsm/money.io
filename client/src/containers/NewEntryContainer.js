@@ -21,10 +21,9 @@ class NewEntryContainer extends Component {
 
   publishTransaction(formData) {
     const transaction = {
-      "id": formData.transactionId,
-      "time": formData.time,
       "title": formData.title,
-      "participants": {}
+      "participants": {},
+      "enteredBy": this.props.currentUser.uid
     };
     let total = 0;
     formData.items.forEach(item => {

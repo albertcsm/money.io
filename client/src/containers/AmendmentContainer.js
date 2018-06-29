@@ -27,6 +27,7 @@ class AmendmentContainer extends Component {
       "time": formData.time,
       "title": formData.title,
       "participants": {},
+      "enteredBy": this.props.currentUser.uid,
       "amendmentOn": formData.existingTransaction.transactionId
     };
     let total = 0;

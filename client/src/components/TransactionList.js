@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { connect } from 'react-redux';
+import Moment from 'moment';
 
 import store from '../store.js';
 import * as Actions from '../actions';
 import * as Selectors from '../selectors';
 
 const TransactionFilter = {
-  PAID_BY_ME: 'PAID_BY_ME',
-  INVOLVED: 'INVOLVED',
+  MY_TRANSACTIONS: 'MY_TRANSACTIONS',
+  ENTERED_BY_ME: 'ENTERED_BY_ME',
   ALL: 'ALL',
 };
 
@@ -22,24 +23,22 @@ class TransactionList extends Component {
   renderTransactionRow(t) {
     return (
       <tr key={t.id} className="MoneyIO-table-row-as-link" onClick={() => this.props.history.push("/transactions/" + t.id)}>
-        <td>{new Date(t.time).toLocaleString()}</td>
+        <td>{Moment(t.time).format('YYYY-MM-DD h:mm a')}</td>
         <td>{t.title}</td>
+        {this.props.transactionListFilter !== "ENTERED_BY_ME" &&
+          <td>
+            {this.props.buddies[t.enteredBy].name}
+          </td>
+        }
         <td>
-          {Object.entries(t.participants)
-            .filter(e => e[1] > 0)
-            .map(e => this.props.buddies[e[0]].name).join(', ')}
+          {Object.keys(t.participants)
+            .map(id => this.props.buddies[id].name).join(', ')}
         </td>
-        <td>
-          {Object.entries(t.participants)
-            .filter(e => e[1] <= 0)
-            .map(e => this.props.buddies[e[0]].name).join(', ')}
-        </td>
-        <td>
-          {Object.entries(t.participants)
-            .filter(e => e[1] > 0)
-            .map(e => e[1])
-            .reduce((a, b) => a + b, 0)}
-        </td>
+        {this.props.transactionListFilter !== "ALL" &&
+          <td>
+            {t.participants[this.props.currentUser.uid]}
+          </td>
+        }
       </tr>
     );
   }
@@ -47,28 +46,31 @@ class TransactionList extends Component {
   renderAmendedTransactionRow(t) {
     return (
       <tr key={'amendment-' + t.id} className="table-sm small MoneyIO-table-row-as-link MoneyIO-table-row-indent" onClick={() => this.props.history.push("/transactions/" + t.id)}>
-        <td>revision: {new Date(t.time).toLocaleString()}</td>
+        <td>{t.amendmentOn ? 'amendment' : 'original'}: {Moment(t.time).format('YYYY-MM-DD h:mm a')}</td>
         <td>{t.title}</td>
+        {this.props.transactionListFilter !== "ENTERED_BY_ME" &&
+          <td>
+            {this.props.buddies[t.enteredBy].name}
+          </td>
+        }
         <td>
-          {Object.entries(t.participants)
-            .filter(e => e[1] > 0)
-            .map(e => this.props.buddies[e[0]].name).join(', ')}
+          {Object.keys(t.participants)
+            .map(id => this.props.buddies[id].name).join(', ')}
         </td>
-        <td>
-          {Object.entries(t.participants)
-            .filter(e => e[1] <= 0)
-            .map(e => this.props.buddies[e[0]].name).join(', ')}
-        </td>
-        <td></td>
+        {this.props.transactionListFilter !== "ALL" &&
+          <td>
+            {t.participants[this.props.currentUser.uid]}
+          </td>
+        }
       </tr>
     );
   }
 
   render() {
     let filteredTransactionList;
-    if (this.props.transactionListFilter === TransactionFilter.PAID_BY_ME) {
-      filteredTransactionList = this.props.myPaidTransactionList;
-    } else if (this.props.transactionListFilter === TransactionFilter.INVOLVED) {
+    if (this.props.transactionListFilter === TransactionFilter.ENTERED_BY_ME) {
+      filteredTransactionList = this.props.myEnteredTransactionList;
+    } else if (this.props.transactionListFilter === TransactionFilter.MY_TRANSACTIONS) {
       filteredTransactionList = this.props.myTransactionList;
     } else if (this.props.transactionListFilter === TransactionFilter.ALL) {
       filteredTransactionList = this.props.transactionList;
@@ -91,10 +93,10 @@ class TransactionList extends Component {
         <div className="MoneyIO-Nav-container">
           <Nav pills>
             <NavItem>
-              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.PAID_BY_ME} onClick={() => this.setTransactionListFilter(TransactionFilter.PAID_BY_ME)}>Paid by me</NavLink>
+              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.MY_TRANSACTIONS} onClick={() => this.setTransactionListFilter(TransactionFilter.MY_TRANSACTIONS)}>My transactions</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.INVOLVED} onClick={() => this.setTransactionListFilter(TransactionFilter.INVOLVED)}>I was involved</NavLink>
+              <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.ENTERED_BY_ME} onClick={() => this.setTransactionListFilter(TransactionFilter.ENTERED_BY_ME)}>Entered by me</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="#" active={this.props.transactionListFilter === TransactionFilter.ALL} onClick={() => this.setTransactionListFilter(TransactionFilter.ALL)}>All</NavLink>
@@ -106,9 +108,9 @@ class TransactionList extends Component {
             <tr>
               <th>Date</th>
               <th>Title</th>
-              <th>Paid by</th>
+              {this.props.transactionListFilter !== "ENTERED_BY_ME" && <th>Entered by</th>}
               <th>Involved</th>
-              <th>Total</th>
+              {this.props.transactionListFilter !== "ALL" && <th>Amount</th>}
             </tr>
           </thead>
           <tbody>
@@ -124,8 +126,9 @@ class TransactionList extends Component {
 const mapStateToProps = state => ({
   transactionList: Selectors.getAggregatedTransactionList(state),
   myTransactionList: Selectors.getMyTransactionList(state),
-  myPaidTransactionList: Selectors.getMyPaidTransactionList(state),
+  myEnteredTransactionList: Selectors.getMyEnteredTransactionList(state),
   buddies: state.buddies,
+  currentUser: state.currentUser,
   transactionListFilter: state.transactionListFilter
 });
 
