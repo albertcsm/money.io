@@ -54,11 +54,11 @@ export function fetchTransactions(groupId = 'default') {
   };
 };
 
-export function initializeNewEntryForm() {
+export function initializeNewEntryForm(formType) {
   return dispatch => {
     dispatch({ type: UPDATE_NEW_ENTRY_FORM, payload: { 
-      transactionId: database.ref().child('transactions').push().key,
       time: null,
+      type: formType,
       title: '',
       items: [
         {
@@ -80,9 +80,7 @@ export function initializeAmendmentForm(transactionId, groupId = 'default') {
     database.ref('/groups/' + groupId + '/transactions/' + transactionId).once('value').then(snapshot => {
       const existingTransaction = { ...snapshot.val(), transactionId: transactionId };
       const amendmentForm = { 
-        transactionId: database.ref().child('transactions').push().key,
         existingTransaction,
-        time: existingTransaction.time,
         type: existingTransaction.type,
         title: existingTransaction.title,
         items: Object.entries(existingTransaction.participants)
@@ -106,10 +104,10 @@ export function publishTransaction(transaction, groupId = 'default') {
   return dispatch => {
     dispatch({ type: PUBLISH_TRANSACTION_START, payload: null });
 
-    var transactionWithoutId = { ...transaction, time: firebase.database.ServerValue.TIMESTAMP };
-    delete transactionWithoutId.id;
+    const transactionId = database.ref('/groups/' + groupId + '/transactions').push().key;
+    const timedTransaction = { ...transaction, time: firebase.database.ServerValue.TIMESTAMP };
 
-    database.ref('/groups/' + groupId + '/transactions/' + transaction.id).set(transactionWithoutId).then(() => {
+    database.ref('/groups/' + groupId + '/transactions/' + transactionId).set(timedTransaction).then(() => {
       dispatch({ type: PUBLISH_TRANSACTION_SUCCEEDED, payload: null });
     });
   };

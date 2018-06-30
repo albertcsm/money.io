@@ -99,11 +99,15 @@ export const getCloseBuddyList = createSelector([getCurrentUserId, getMyTransact
 });
 
 export const getAmendmentForm = createSelector([getRawAmendmentForm, getBuddies], (rawAmendmentForm, buddies) => {
-  return {
-    ...rawAmendmentForm,
-    items: rawAmendmentForm.items.map(item => ({
-      ...item,
-      buddyUserName: buddies[item.buddyUserId] ? buddies[item.buddyUserId].name : item.buddyUserName
-    }))
+  if (rawAmendmentForm.existingTransaction) {
+    return {
+      ...rawAmendmentForm,
+      items: rawAmendmentForm.items.map(item => ({
+        ...item,
+        buddyUserName: buddies[item.buddyUserId] ? buddies[item.buddyUserId].name : item.buddyUserName
+      }))
+    }
+  } else {
+    return rawAmendmentForm;
   }
 });

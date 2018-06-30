@@ -1,4 +1,5 @@
 import * as Actions from '../actions';
+import {formProviders} from '../configs';
 
 const INITIAL_STATE = {
   authenticating: true,
@@ -10,12 +11,10 @@ const INITIAL_STATE = {
   transactionList: [],
   newEntryForm: {
     title: '',
+    type: formProviders[0].key,
     items: []
   },
-  amendmentForm: {
-    title: '',
-    items: []
-  },
+  amendmentForm: {},
   buddyListFilter: 'CLOSE_BUDDIES',
   transactionListFilter: 'MY_TRANSACTIONS',
   publishingTransaction: false

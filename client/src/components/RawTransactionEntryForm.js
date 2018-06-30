@@ -12,7 +12,7 @@ const translations = {
   inPercent: 'percent'
 };
 
-class EntryForm extends Component {
+class RawTransactionEntryForm extends Component {
 
   constructor() {
     super();
@@ -102,7 +102,7 @@ class EntryForm extends Component {
       <Form>
         <FormGroup row>
           <div className="col-4">
-            <Label for="title" className="MoneyIO-form-label">Restaurant</Label>
+            <Label for="title" className="MoneyIO-form-label">Title</Label>
           </div>
           <div className="col-8">
             <Input id="title" type="text" value={this.props.formData.title} name="title" onChange={(event) => this.handleFieldUpdate('title', event.target.value)}/>
@@ -199,39 +199,33 @@ class EntryForm extends Component {
 
   render() {
     return (
-      <div className="card">
-        <div className="card-body">
-          <div className="mb-4 text-center">
-            <h5>Restaurant bill</h5>
-          </div>
+      <div>
+        {this.renderBasicInfo()}
 
-          {this.renderBasicInfo()}
+        {this.props.formData.items.map((item, i) => (
+          <EntryFormItem key={i} item={item} buddyList={this.props.buddyList}
+            onItemUpdate={(item) => this.handleItemUpdate(i, item)}
+            onRemove={() => this.removeEntryItem(i)}/>
+        ))}
 
-          {this.props.formData.items.map((item, i) => (
-            <EntryFormItem key={i} item={item} buddyList={this.props.buddyList}
-              onItemUpdate={(item) => this.handleItemUpdate(i, item)}
-              onRemove={() => this.removeEntryItem(i)}/>
-          ))}
-
-          <div className="text-center ">
-            <Button id="add-entry-item-button" color="link" onClick={() => this.addNewEntryItem()}>
-              <span className="fa fa-plus"/> Add
-            </Button>
-          </div>
-        
-          {this.renderBillAdjustments()}
-          {this.renderSummary()}
-          <div className="clearfix">
-            { this.props.formData.time &&
-                <div className="float-left">
-                  <label className="font-weight-light">
-                    Published on {Moment(this.props.formData.time).format('YYYY-MM-DD h:mm a')}
-                  </label>
-                </div>
-              }
-            <div className="text-right">
-              <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publish()}>Publish</Button>
-            </div>
+        <div className="text-center ">
+          <Button id="add-entry-item-button" color="link" onClick={() => this.addNewEntryItem()}>
+            <span className="fa fa-plus"/> Add
+          </Button>
+        </div>
+      
+        {this.renderBillAdjustments()}
+        {this.renderSummary()}
+        <div className="clearfix">
+          { this.props.formData.time &&
+              <div className="float-left">
+                <label className="font-weight-light">
+                  Published on {Moment(this.props.formData.time).format('YYYY-MM-DD h:mm a')}
+                </label>
+              </div>
+            }
+          <div className="text-right">
+            <Button color="primary" disabled={this.props.publishingTransaction} onClick={(event) => this.publish()}>Publish</Button>
           </div>
         </div>
       </div>
@@ -240,4 +234,4 @@ class EntryForm extends Component {
 
 }
 
-export default EntryForm;
+export default RawTransactionEntryForm;

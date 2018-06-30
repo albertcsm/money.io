@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import { formProviders } from '../configs';
 import store from '../store.js';
 import * as Actions from '../actions';
 import * as Selectors from '../selectors';
-import EntryForm from '../components/EntryForm'
+import FormTypeSelector from '../components/FormTypeSelector';
 
 class AmendmentContainer extends Component {
 
   componentWillMount() {
     const existingTransactionId = this.props.match.params.transactionId;
-    if (!this.props.formData.existingTransaction || this.props.formData.existingTransaction.id !== existingTransactionId) {
+    if (!this.props.formData.existingTransaction || this.props.formData.existingTransaction.transactionId !== existingTransactionId) {
+      console.log('Loading existing transaction ' + existingTransactionId);
       store.dispatch(Actions.initializeAmendmentForm(existingTransactionId));
     }
   }
@@ -43,10 +45,25 @@ class AmendmentContainer extends Component {
   }
 
   render() {
-    return (<EntryForm formData={this.props.formData}
-      buddyList={this.props.buddyList}
-      onUpdate={(formData) => this.updateForm(formData)}
-      onPublish={(formData) => this.publishAmendment(formData)}/>);
+    if (this.props.formData.existingTransaction) {
+      const formProvider = formProviders.find(p => p.key === this.props.formData.type) || formProviders[0];
+      const MatchedForm = formProvider.form;
+      return (
+        <div className="card">
+          <div className="card-body">
+            <div className="text-center mb-4">
+              <FormTypeSelector selectedType={this.props.formData.type} disabled/>
+            </div>
+            <MatchedForm formData={this.props.formData}
+              buddyList={this.props.buddyList}
+              onUpdate={(formData) => this.updateForm(formData)}
+              onPublish={(formData) => this.publishAmendment(formData)}/>
+          </div>
+        </div>
+      );
+    } else {
+      return <div/>
+    }
   }
 
 }

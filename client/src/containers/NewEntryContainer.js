@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import { formProviders } from '../configs';
 import store from '../store.js';
 import * as Actions from '../actions';
 import * as Selectors from '../selectors';
-import EntryForm from '../components/EntryForm'
+import FormTypeSelector from '../components/FormTypeSelector';
 
 class NewEntryContainer extends Component {
 
   componentWillMount() {
     if (!this.props.formData.transactionId) {
-      store.dispatch(Actions.initializeNewEntryForm());
+      store.dispatch(Actions.initializeNewEntryForm("RECEIPT"));
     }
   }
 
@@ -22,6 +23,7 @@ class NewEntryContainer extends Component {
   publishTransaction(formData) {
     const transaction = {
       "title": formData.title,
+      'type': formData.type,
       "participants": {},
       "enteredBy": this.props.currentUser.uid
     };
@@ -38,10 +40,20 @@ class NewEntryContainer extends Component {
   }
 
   render() {
-    return (<EntryForm formData={this.props.formData}
-      buddyList={this.props.buddyList}
-      onUpdate={formData => this.updateForm(formData)}
-      onPublish={formData => this.publishTransaction(formData)}/>);
+    const MatchedForm = (formProviders.find(p => p.key === this.props.formData.type) || formProviders[0]).form;
+    return (
+      <div className="card">
+        <div className="card-body">
+          <div className="text-center mb-4">
+            <FormTypeSelector selectedType={this.props.formData.type} onChange={(formType) => store.dispatch(Actions.initializeNewEntryForm(formType))}/>
+          </div>
+          <MatchedForm formData={this.props.formData}
+            buddyList={this.props.buddyList}
+            onUpdate={formData => this.updateForm(formData)}
+            onPublish={formData => this.publishTransaction(formData)}/>
+        </div>
+      </div>
+    );
   }
 
 }
